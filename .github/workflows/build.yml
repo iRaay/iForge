@@ -9,7 +9,7 @@ on:
         default: "iRaay/Navi"
 
 jobs:
-  analyze:
+  build:
     runs-on: macos-latest
 
     steps:
@@ -19,13 +19,13 @@ jobs:
         run: |
           git clone "https://github.com/$REPOSITORY.git" project
 
-      - name: Analyze Xcode Project
+      - name: Build iOS Scheme
         run: |
           cd project
 
-          PROJECT=$(find . -name "*.xcodeproj" | head -n 1)
-
-          echo "Project:"
-          echo "$PROJECT"
-
-          xcodebuild -list -project "$PROJECT"
+          xcodebuild \
+            -project Navi.xcodeproj \
+            -scheme "Navi iOS" \
+            -configuration Debug \
+            -destination "generic/platform=iOS" \
+            build
