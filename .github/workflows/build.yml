@@ -14,8 +14,10 @@ jobs:
 
     steps:
       - name: Clone Repository
-        run: |
-          git clone https://github.com/${{ github.event.inputs.repository }}.git project
+  env:
+    REPOSITORY: ${{ github.event.inputs.repository }}
+  run: |
+    git clone "https://github.com/$REPOSITORY.git" project
 
 - name: Analyze Xcode Project
   run: |
@@ -27,3 +29,4 @@ jobs:
     echo "$PROJECT"
 
     xcodebuild -list -project "$PROJECT"
+    
