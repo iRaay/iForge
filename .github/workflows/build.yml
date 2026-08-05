@@ -17,9 +17,13 @@ jobs:
         run: |
           git clone https://github.com/${{ github.event.inputs.repository }}.git project
 
-      - name: Find Xcode Projects
-        run: |
-          cd project
-          echo "Searching..."
-          find . -name "*.xcodeproj"
-          find . -name "*.xcworkspace"
+- name: Analyze Xcode Project
+  run: |
+    cd project
+
+    PROJECT=$(find . -name "*.xcodeproj" | head -n 1)
+
+    echo "Project:"
+    echo "$PROJECT"
+
+    xcodebuild -list -project "$PROJECT"
