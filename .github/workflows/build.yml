@@ -14,19 +14,18 @@ jobs:
 
     steps:
       - name: Clone Repository
-  env:
-    REPOSITORY: ${{ github.event.inputs.repository }}
-  run: |
-    git clone "https://github.com/$REPOSITORY.git" project
+        env:
+          REPOSITORY: ${{ github.event.inputs.repository }}
+        run: |
+          git clone "https://github.com/$REPOSITORY.git" project
 
-- name: Analyze Xcode Project
-  run: |
-    cd project
+      - name: Analyze Xcode Project
+        run: |
+          cd project
 
-    PROJECT=$(find . -name "*.xcodeproj" | head -n 1)
+          PROJECT=$(find . -name "*.xcodeproj" | head -n 1)
 
-    echo "Project:"
-    echo "$PROJECT"
+          echo "Project:"
+          echo "$PROJECT"
 
-    xcodebuild -list -project "$PROJECT"
-    
+          xcodebuild -list -project "$PROJECT"
