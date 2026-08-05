@@ -22,10 +22,4 @@ jobs:
       - name: Build iOS Scheme
         run: |
           cd project
-
-          xcodebuild \
-            -project Navi.xcodeproj \
-            -scheme "Navi iOS" \
-            -configuration Debug \
-            -destination "generic/platform=iOS" \
-            build
+          xcodebuild -project Navi.xcodeproj -scheme "Navi iOS" -configuration Debug -destination "generic/platform=iOS" CODE_SIGNING_ALLOWED=NO build
