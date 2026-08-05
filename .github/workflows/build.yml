@@ -2,16 +2,24 @@ name: iOS Builder
 
 on:
   workflow_dispatch:
+    inputs:
+      repository:
+        description: "GitHub repository (owner/repo)"
+        required: true
+        default: "iRaay/Navi"
 
 jobs:
   analyze:
     runs-on: macos-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Clone Repository
+        run: |
+          git clone https://github.com/${{ github.event.inputs.repository }}.git project
 
       - name: Find Xcode Projects
         run: |
+          cd project
           echo "Searching..."
           find . -name "*.xcodeproj"
           find . -name "*.xcworkspace"
