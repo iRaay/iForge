@@ -1,23 +1,23 @@
 #!/bin/bash
 set -e
 
-echo "=============================="
-echo "🚀 Build Project"
-echo "=============================="
+echo "==============================="
+echo "🚀 Archive Project"
+echo "==============================="
 
 cd project
 
-echo ""
-echo "Building..."
+mkdir -p build
 
 xcodebuild \
 -project Navi.xcodeproj \
 -scheme "Navi iOS" \
--configuration Debug \
+-configuration Release \
 -destination "generic/platform=iOS" \
 -derivedDataPath build \
+-archivePath build/Navi.xcarchive \
 CODE_SIGNING_ALLOWED=NO \
-build
+archive
 
 echo ""
-echo "✅ Build Finished"
+echo "✅ Archive Finished"
