@@ -42,7 +42,16 @@ jobs:
           chmod +x scripts/build.sh
           ./scripts/build.sh
 
-      - name: Export IPA
+            - name: Export IPA
         run: |
           chmod +x scripts/export.sh
           ./scripts/export.sh
+
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-output
+          path: |
+            project/build/Build/Products/**/*.app
+            project/build/**/*.xcarchive
+            project/build/**/*.ipa
