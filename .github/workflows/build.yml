@@ -15,7 +15,7 @@ jobs:
     steps:
       - name: Checkout iOS Builder
         uses: actions/checkout@v4
-      
+
       - name: Clone Repository
         env:
           REPOSITORY: ${{ github.event.inputs.repository }}
@@ -29,6 +29,20 @@ jobs:
 
       - name: Analyze Project
         run: |
-          pwd
-          ls -la
-          find . -maxdepth 2 -type f
+          chmod +x scripts/analyze.sh
+          ./scripts/analyze.sh
+
+      - name: Prepare Environment
+        run: |
+          chmod +x scripts/prepare.sh
+          ./scripts/prepare.sh
+
+      - name: Build iOS Scheme
+        run: |
+          chmod +x scripts/build.sh
+          ./scripts/build.sh
+
+      - name: Export IPA
+        run: |
+          chmod +x scripts/export.sh
+          ./scripts/export.sh
