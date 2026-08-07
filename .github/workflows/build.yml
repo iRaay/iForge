@@ -42,7 +42,7 @@ jobs:
           chmod +x scripts/build.sh
           ./scripts/build.sh
 
-            - name: Export IPA
+      - name: Export IPA
         run: |
           chmod +x scripts/export.sh
           ./scripts/export.sh
