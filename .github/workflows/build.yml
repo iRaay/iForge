@@ -19,7 +19,19 @@ jobs:
         run: |
           git clone "https://github.com/$REPOSITORY.git" project
 
+      - name: Install mise
+        run: |
+          brew install mise
+          mise --version
+
       - name: Build iOS Scheme
         run: |
           cd project
-          xcodebuild -project Navi.xcodeproj -scheme "Navi iOS" -configuration Debug -destination "generic/platform=iOS" CODE_SIGNING_ALLOWED=NO build
+
+          xcodebuild \
+            -project Navi.xcodeproj \
+            -scheme "Navi iOS" \
+            -configuration Debug \
+            -destination "generic/platform=iOS" \
+            CODE_SIGNING_ALLOWED=NO \
+            build
