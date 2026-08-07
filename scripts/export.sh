@@ -22,7 +22,8 @@ xcodebuild \
 -exportArchive \
 -archivePath "$ARCHIVE_PATH" \
 -exportOptionsPlist scripts/ExportOptions.plist \
--exportPath "$EXPORT_PATH"
+-exportPath "$EXPORT_PATH" \
+-allowProvisioningUpdates
 
 echo ""
 echo "============================"
