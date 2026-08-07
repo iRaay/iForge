@@ -24,14 +24,8 @@ jobs:
           brew install mise
           mise --version
 
-      - name: Build iOS Scheme
+      - name: Analyze Project
         run: |
           cd project
-
-          xcodebuild \
-            -project Navi.xcodeproj \
-            -scheme "Navi iOS" \
-            -configuration Debug \
-            -destination "generic/platform=iOS" \
-            CODE_SIGNING_ALLOWED=NO \
-            build
+          chmod +x ../scripts/analyze.sh
+          ../scripts/analyze.sh
