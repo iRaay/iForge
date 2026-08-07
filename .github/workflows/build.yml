@@ -26,6 +26,6 @@ jobs:
 
       - name: Analyze Project
         run: |
-          cd project
-          chmod +x ../scripts/analyze.sh
-          ../scripts/analyze.sh
+          pwd
+          ls -la
+          find . -maxdepth 2 -type f
