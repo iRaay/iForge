@@ -5,8 +5,8 @@ echo "============================"
 echo "📦 Export IPA"
 echo "============================"
 
-ARCHIVE_PATH="build/Navi.xcarchive"
-EXPORT_PATH="build/export"
+ARCHIVE_PATH="project/build/Navi.xcarchive"
+EXPORT_PATH="project/build/export"
 
 echo ""
 echo "Archive:"
