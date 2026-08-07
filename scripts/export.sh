@@ -1,19 +1,26 @@
 #!/bin/bash
 set -e
 
-echo "=============================="
+echo "==============================="
 echo "📦 Export Results"
-echo "=============================="
+echo "==============================="
 
 cd project
 
 echo ""
-echo "Searching for build products..."
+echo "Searching for archives..."
 
-find . \
--name "*.app" \
--o -name "*.ipa" \
--o -name "*.xcarchive"
+find build -name "*.xcarchive"
+
+echo ""
+echo "Searching for ipa..."
+
+find build -name "*.ipa"
+
+echo ""
+echo "Searching for app..."
+
+find build -name "*.app"
 
 echo ""
 echo "✅ Export Complete"
