@@ -2,31 +2,43 @@
 
 > **Build once. Sign anywhere.**
 
-### The open-source iOS build engine.
+### The open-source build engine for iOS projects.
 
-Forge is an open-source iOS build pipeline that transforms any GitHub repository into an unsigned iOS application ready for the signing tool of your choice.
+Forge is an open-source automation engine that transforms any GitHub iOS repository into a clean, unsigned build—ready to be signed using the tool of your choice.
 
 No Xcode setup.
+
 No manual project configuration.
+
 No complicated build steps.
 
-Just give Forge a repository, and it does the rest.
+Just provide a repository, and Forge handles the rest.
 
 ---
 
 # ✨ Why Forge?
 
-Building iOS projects outside of Xcode is often complicated.
+Building iOS projects outside of Xcode can be frustrating.
 
-Different projects use different structures, build systems, workspaces, schemes, and dependencies.
+Every project is different.
 
-Forge was created to remove that complexity.
+Different project structures.
+
+Different build systems.
+
+Different workspaces.
+
+Different schemes.
+
+Different dependencies.
+
+Forge removes that complexity.
 
 Its mission is simple:
 
-> Analyze. Build. Export.
+> **Analyze. Detect. Build. Export.**
 
-Signing is your choice.
+Signing is **your choice**.
 
 ---
 
@@ -37,10 +49,10 @@ Signing is your choice.
 - 🧠 Automatically detect available Schemes
 - ⚙️ Prepare the build environment
 - 📦 Build iOS projects
-- 🗂 Create Xcode Archives
+- 🗂 Generate Xcode Archives
 - 📤 Export unsigned build artifacts
-- ☁️ Upload build artifacts through GitHub Actions
-- 🧩 Plugin-based architecture (future)
+- ☁️ Upload build artifacts using GitHub Actions
+- 🧩 Plugin-based architecture (coming soon)
 - 🛠 Designed to work entirely from GitHub Actions
 
 ---
@@ -49,7 +61,7 @@ Signing is your choice.
 
 Forge intentionally separates **building** from **signing**.
 
-Instead of forcing developers into a specific signing workflow, Forge focuses on producing a clean build that can later be signed using the tool that best fits their workflow.
+Instead of forcing developers into one signing workflow, Forge focuses on building reliable unsigned applications that can later be signed however you prefer.
 
 ```
 Git Repository
@@ -73,7 +85,7 @@ Git Repository
  Export
         │
         ▼
- Unsigned IPA / Build Artifacts
+ Unsigned IPA
         │
         ▼
  Feather
@@ -83,6 +95,10 @@ Git Repository
  Apple Configurator
  or any signing solution
 ```
+
+Forge builds.
+
+You decide how to sign.
 
 ---
 
@@ -117,7 +133,7 @@ Upload Artifacts
 - Automatic scheme detection
 - Build pipeline
 - Archive generation
-- Export unsigned artifacts
+- Export unsigned IPA
 - GitHub Actions support
 
 ---
@@ -135,19 +151,19 @@ Upload Artifacts
 
 ## Version 3.0
 
-Plugin system
+Plugin System
 
 Examples:
 
-- Signing Plugin
-- TestFlight Plugin
-- App Store Plugin
-- Notarization Plugin
-- Custom Export Plugins
+- 🔐 Signing Plugin
+- ☁️ TestFlight Plugin
+- 📦 App Store Plugin
+- 🧾 Notarization Plugin
+- 🧩 Custom Export Plugins
 
 ---
 
-# 🏗 Project Structure
+# 🏗 Architecture
 
 ```
 Forge/
@@ -175,11 +191,13 @@ Forge/
 
 # 🌍 Vision
 
-Forge aims to become a universal build engine for iOS projects.
+Forge aims to become the universal build engine for iOS projects.
 
 The long-term goal is simple:
 
 Give Forge any GitHub repository and receive a ready-to-sign build without opening Xcode.
+
+Whether you're using GitHub Actions today or another CI platform tomorrow, Forge is designed to remain portable, extensible, and developer-friendly.
 
 ---
 
@@ -187,9 +205,16 @@ Give Forge any GitHub repository and receive a ready-to-sign build without openi
 
 Forge is built for developers who love automation, open-source software, and clean build pipelines.
 
-Contributions are always welcome.
+Whether you:
 
-Whether you improve build detection, support new project structures, optimize workflows, or add plugins—you are helping Forge become better for everyone.
+- Improve project detection
+- Support new project structures
+- Optimize build workflows
+- Create plugins
+- Fix bugs
+- Improve documentation
+
+Every contribution helps Forge become better for the entire community.
 
 ---
 
