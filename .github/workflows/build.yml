@@ -36,7 +36,12 @@ jobs:
         run: |
           chmod +x scripts/prepare.sh
           ./scripts/prepare.sh
-
+                
+      - name: Signing Environment
+        run: |
+          chmod +x scripts/sign.sh
+          ./scripts/sign.sh
+          
       - name: Build iOS Scheme
         run: |
           chmod +x scripts/build.sh
