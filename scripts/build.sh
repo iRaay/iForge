@@ -15,6 +15,7 @@ xcodebuild \
 -scheme "Navi iOS" \
 -configuration Debug \
 -destination "generic/platform=iOS" \
+-derivedDataPath build \
 CODE_SIGNING_ALLOWED=NO \
 build
 
