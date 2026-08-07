@@ -1,26 +1,35 @@
 #!/bin/bash
 set -e
 
-echo "==============================="
-echo "📦 Export Results"
-echo "==============================="
+echo "============================"
+echo "📦 Export IPA"
+echo "============================"
 
-cd project
-
-echo ""
-echo "Searching for archives..."
-
-find build -name "*.xcarchive"
+ARCHIVE_PATH="build/Navi.xcarchive"
+EXPORT_PATH="build/export"
 
 echo ""
-echo "Searching for ipa..."
-
-find build -name "*.ipa"
-
-echo ""
-echo "Searching for app..."
-
-find build -name "*.app"
+echo "Archive:"
+echo "$ARCHIVE_PATH"
 
 echo ""
-echo "✅ Export Complete"
+echo "Export Path:"
+echo "$EXPORT_PATH"
+
+mkdir -p "$EXPORT_PATH"
+
+xcodebuild \
+-exportArchive \
+-archivePath "$ARCHIVE_PATH" \
+-exportOptionsPlist scripts/ExportOptions.plist \
+-exportPath "$EXPORT_PATH"
+
+echo ""
+echo "============================"
+echo "📂 Export Result"
+echo "============================"
+
+find "$EXPORT_PATH" -type f
+
+echo ""
+echo "✅ Finished"
