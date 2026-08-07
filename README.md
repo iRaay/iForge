@@ -1,42 +1,55 @@
-# 🚀 iOS Builder
+# ⚒ Forge
 
 > **Build once. Sign anywhere.**
->
-> Build any iOS project from GitHub and export an unsigned IPA ready for signing with the tool of your choice.
 
-Build any iOS project from a GitHub repository with zero Xcode setup.
+### The open-source iOS build engine.
 
-iOS Builder is an open-source automation tool that clones, analyzes, builds, archives, and exports iOS applications into an unsigned IPA package ready for signing with your preferred tool.
+Forge is an open-source iOS build pipeline that transforms any GitHub repository into an unsigned iOS application ready for the signing tool of your choice.
 
-The goal is simple:
+No Xcode setup.
+No manual project configuration.
+No complicated build steps.
 
-> Give iOS Builder a GitHub repository, and it will do the heavy work.
+Just give Forge a repository, and it does the rest.
 
 ---
 
-## ✨ Features
+# ✨ Why Forge?
+
+Building iOS projects outside of Xcode is often complicated.
+
+Different projects use different structures, build systems, workspaces, schemes, and dependencies.
+
+Forge was created to remove that complexity.
+
+Its mission is simple:
+
+> Analyze. Build. Export.
+
+Signing is your choice.
+
+---
+
+# 🚀 Features
 
 - 📥 Clone any public GitHub repository
-- 🔍 Automatically analyze the project structure
-- 🧠 Detect Xcode Project or Workspace
-- 🎯 Detect available Schemes
+- 🔍 Automatically detect Xcode Projects and Workspaces
+- 🧠 Automatically detect available Schemes
 - ⚙️ Prepare the build environment
-- 📦 Build and archive the application
-- 📁 Export build artifacts
-- 🚫 No Apple ID required
-- 🚫 No Certificates required
-- 🚫 No Provisioning Profiles required
-- 📤 Ready for external signing (Feather, Esign, AltStore, Sideloadly...)
+- 📦 Build iOS projects
+- 🗂 Create Xcode Archives
+- 📤 Export unsigned build artifacts
+- ☁️ Upload build artifacts through GitHub Actions
+- 🧩 Plugin-based architecture (future)
+- 🛠 Designed to work entirely from GitHub Actions
 
 ---
 
-## 🎯 Project Philosophy
+# 🎯 Philosophy
 
-iOS Builder is **not** another code-signing tool.
+Forge intentionally separates **building** from **signing**.
 
-Its purpose is to automate everything **before signing**.
-
-Instead of requiring Xcode, Apple accounts, certificates, and complicated setup, iOS Builder focuses on generating a clean unsigned build that can be signed using any workflow you prefer.
+Instead of forcing developers into a specific signing workflow, Forge focuses on producing a clean build that can later be signed using the tool that best fits their workflow.
 
 ```
 Git Repository
@@ -57,20 +70,30 @@ Git Repository
  Archive
         │
         ▼
- Unsigned IPA
+ Export
         │
         ▼
- Feather / Esign / AltStore / Sideloadly
+ Unsigned IPA / Build Artifacts
+        │
+        ▼
+ Feather
+ AltStore
+ Esign
+ Sideloadly
+ Apple Configurator
+ or any signing solution
 ```
 
 ---
 
-## 📂 Current Pipeline
+# 📦 Current Pipeline
 
 ```
 Clone Repository
       ↓
 Analyze Project
+      ↓
+Detect Project Structure
       ↓
 Prepare Environment
       ↓
@@ -85,62 +108,91 @@ Upload Artifacts
 
 ---
 
-## 🛣 Roadmap
+# 🛣 Roadmap
 
-### Version 1.0
+## Version 1.0
 
-- Project Analyzer
-- Automatic Scheme Detection
-- Automatic Project Detection
-- Build
-- Archive
-- Export Unsigned IPA
+- Repository cloning
+- Automatic project detection
+- Automatic scheme detection
+- Build pipeline
+- Archive generation
+- Export unsigned artifacts
 - GitHub Actions support
 
-### Version 2.0
+---
 
-- Plugin System
-- Automatic Signing (optional plugin)
+## Version 2.0
+
+- Intelligent project analysis
+- Multi-project support
+- Automatic dependency detection
+- Build reports
+- Configuration files
+- Build profiles
+
+---
+
+## Version 3.0
+
+Plugin system
+
+Examples:
+
+- Signing Plugin
 - TestFlight Plugin
 - App Store Plugin
-- Custom Build Templates
-
-### Future
-
-- GitLab CI
-- Jenkins
-- Azure DevOps
-- Codemagic
-- Local CLI
-- Web Dashboard
+- Notarization Plugin
+- Custom Export Plugins
 
 ---
 
-## 🧩 Architecture
+# 🏗 Project Structure
 
 ```
-iOS-Builder/
+Forge/
 
+├── .github/
+│   └── workflows/
+│
 ├── scripts/
+│   ├── analyze.sh
+│   ├── prepare.sh
+│   ├── build.sh
+│   ├── export.sh
+│   └── sign.sh
+│
 ├── templates/
+│
 ├── plugins/
-│   ├── signing/
-│   ├── testflight/
-│   └── appstore/
+│
 ├── docs/
-└── .github/
+│
+└── README.md
 ```
 
 ---
 
-## 🤝 Contributing
+# 🌍 Vision
+
+Forge aims to become a universal build engine for iOS projects.
+
+The long-term goal is simple:
+
+Give Forge any GitHub repository and receive a ready-to-sign build without opening Xcode.
+
+---
+
+# ❤️ Open Source
+
+Forge is built for developers who love automation, open-source software, and clean build pipelines.
 
 Contributions are always welcome.
 
-Whether it's fixing bugs, improving build detection, adding new plugins, or supporting more CI providers, every contribution helps make iOS development easier for everyone.
+Whether you improve build detection, support new project structures, optimize workflows, or add plugins—you are helping Forge become better for everyone.
 
 ---
 
-## 📜 License
+# 📄 License
 
 MIT License
