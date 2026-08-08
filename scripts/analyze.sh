@@ -18,9 +18,9 @@ mkdir -p build
 # --------------------------------------------------
 
 WORKSPACE=$(find . \
-  -name "*.xcworkspace" \
-  -not -path "*/Pods/*" \
-  -not -path "*/.xcodeproj/*" \
+  -type d \
+  -name "*.xcodeproj" -prune -o \
+  -type d -name "*.xcworkspace" -print \
   | head -n 1)
 
 # --------------------------------------------------
@@ -28,8 +28,8 @@ WORKSPACE=$(find . \
 # --------------------------------------------------
 
 PROJECT=$(find . \
-  -name "*.xcodeproj" \
-  -not -path "*/Pods/*" \
+  -type d \
+  -name "*.xcodeproj" -print \
   | head -n 1)
 
 echo ""
