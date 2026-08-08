@@ -1,4 +1,4 @@
-name: iOS Builder
+name: Forge
 
 on:
   workflow_dispatch:
@@ -6,14 +6,15 @@ on:
       repository:
         description: "GitHub repository (owner/repo)"
         required: true
-        default: "iRaay/Navi"
+        
 
 jobs:
   build:
     runs-on: macos-latest
 
     steps:
-      - name: Checkout iOS Builder
+
+      - name: Checkout Forge
         uses: actions/checkout@v4
 
       - name: Clone Repository
@@ -36,27 +37,21 @@ jobs:
         run: |
           chmod +x scripts/prepare.sh
           ./scripts/prepare.sh
-                
-      - name: Signing Environment
-        run: |
-          chmod +x scripts/sign.sh
-          ./scripts/sign.sh
-          
+
       - name: Build iOS Scheme
         run: |
           chmod +x scripts/build.sh
           ./scripts/build.sh
 
-      - name: Export IPA
+      - name: Export Unsigned IPA
         run: |
           chmod +x scripts/export.sh
           ./scripts/export.sh
 
-      - name: Upload Build Artifacts
+      - name: Upload Unsigned IPA
         uses: actions/upload-artifact@v4
         with:
-          name: build-output
-          path: |
-            project/build/Build/Products/**/*.app
-            project/build/**/*.xcarchive
-            project/build/**/*.ipa
+          name: Forge-unsigned-ipa
+          path: project/build/export/Forge-unsigned.ipa
+          if-no-files-found: error
+          retention-days: 7
