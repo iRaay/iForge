@@ -1,58 +1,126 @@
 #!/bin/bash
 set -e
 
-echo "=============================="
-echo "🔍 iOS Project Analyzer"
-echo "=============================="
+echo "======================================"
+echo "⚒ Forge — iOS Project Analyzer"
+echo "======================================"
 
 cd project
 
 echo ""
-echo "📁 Current Directory:"
+echo "📁 Project Directory:"
 pwd
 
+mkdir -p build
+
+# --------------------------------------------------
+# 1. Detect Workspace
+# --------------------------------------------------
+
+WORKSPACE=$(find . -name "*.xcworkspace" -not -path "*/Pods/*" | head -n 1)
+
+# --------------------------------------------------
+# 2. Detect Project
+# --------------------------------------------------
+
+PROJECT=$(find . -name "*.xcodeproj" -not -path "*/Pods/*" | head -n 1)
+
 echo ""
-echo "📦 Xcode Projects:"
-find . -name "*.xcodeproj"
+echo "======================================"
+echo "🔍 Project Detection"
+echo "======================================"
 
-PROJECT=$(find . -name "*.xcodeproj" | head -n 1)
+if [ -n "$WORKSPACE" ]; then
 
-if [ -z "$PROJECT" ]; then
-  echo "❌ No Xcode project found."
-  exit 1
+    BUILD_TYPE="workspace"
+    BUILD_FILE="$WORKSPACE"
+
+    echo "✅ Workspace detected:"
+    echo "$WORKSPACE"
+
+elif [ -n "$PROJECT" ]; then
+
+    BUILD_TYPE="project"
+    BUILD_FILE="$PROJECT"
+
+    echo "✅ Xcode Project detected:"
+    echo "$PROJECT"
+
+else
+
+    echo "❌ No .xcworkspace or .xcodeproj found."
+    exit 1
+
 fi
 
-echo ""
-echo "✅ Project:"
-echo "$PROJECT"
+# --------------------------------------------------
+# 3. Detect Schemes
+# --------------------------------------------------
 
 echo ""
-echo "=============================="
-echo "📋 Project Information"
-echo "=============================="
+echo "======================================"
+echo "🎯 Scheme Detection"
+echo "======================================"
 
-xcodebuild -list -project "$PROJECT"
+if [ "$BUILD_TYPE" = "workspace" ]; then
+
+    LIST_OUTPUT=$(xcodebuild -list -workspace "$BUILD_FILE")
+
+else
+
+    LIST_OUTPUT=$(xcodebuild -list -project "$BUILD_FILE")
+
+fi
+
+echo "$LIST_OUTPUT"
 
 echo ""
-echo "=============================="
+echo "--------------------------------------"
 echo "📱 Available Schemes"
-echo "=============================="
+echo "--------------------------------------"
 
-xcodebuild -list -project "$PROJECT" | sed -n '/Schemes:/,$p'
+SCHEMES=$(echo "$LIST_OUTPUT" | sed -n '/Schemes:/,$p' | tail -n +2 | sed '/^[[:space:]]*$/d' | sed 's/^[[:space:]]*//')
+
+if [ -z "$SCHEMES" ]; then
+    echo "❌ No schemes found."
+    exit 1
+fi
+
+echo "$SCHEMES"
+
+# --------------------------------------------------
+# 4. Select First Scheme
+# --------------------------------------------------
+
+SCHEME=$(echo "$SCHEMES" | head -n 1)
 
 echo ""
-echo "=============================="
-echo "📦 Swift Packages"
-echo "=============================="
+echo "======================================"
+echo "🎯 Selected Scheme"
+echo "======================================"
 
-xcodebuild \
--list \
--project "$PROJECT" \
--showBuildSettings > /dev/null
+echo "$SCHEME"
 
-echo "Resolved successfully."
+# --------------------------------------------------
+# 5. Save Forge Configuration
+# --------------------------------------------------
+
+CONFIG_FILE="build/forge.env"
+
+cat > "$CONFIG_FILE" <<EOF
+FORGE_BUILD_TYPE="$BUILD_TYPE"
+FORGE_BUILD_FILE="$BUILD_FILE"
+FORGE_SCHEME="$SCHEME"
+EOF
 
 echo ""
-echo "=============================="
+echo "======================================"
+echo "⚙️ Forge Configuration"
+echo "======================================"
+
+cat "$CONFIG_FILE"
+
+echo ""
+echo "======================================"
 echo "✅ Analysis Complete"
-echo "=============================="
+echo "======================================"
