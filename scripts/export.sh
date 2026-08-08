@@ -71,7 +71,7 @@ echo "$EXPORT_PATH"
 xcodebuild \
 -exportArchive \
 -archivePath "$ARCHIVE_PATH" \
--exportOptionsPlist scripts/ExportOptions.plist \
+-exportOptionsPlist ../scripts/ExportOptions.plist \
 -exportPath "$EXPORT_PATH"
 
 # --------------------------------------------------
