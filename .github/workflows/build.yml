@@ -6,7 +6,6 @@ on:
       repository:
         description: "GitHub repository (owner/repo)"
         required: true
-        
 
 jobs:
   build:
