@@ -14,16 +14,23 @@ pwd
 mkdir -p build
 
 # --------------------------------------------------
-# 1. Detect Workspace
+# 1. Detect Real Workspace
 # --------------------------------------------------
 
-WORKSPACE=$(find . -name "*.xcworkspace" -not -path "*/Pods/*" | head -n 1)
+WORKSPACE=$(find . \
+  -name "*.xcworkspace" \
+  -not -path "*/Pods/*" \
+  -not -path "*/.xcodeproj/*" \
+  | head -n 1)
 
 # --------------------------------------------------
-# 2. Detect Project
+# 2. Detect Xcode Project
 # --------------------------------------------------
 
-PROJECT=$(find . -name "*.xcodeproj" -not -path "*/Pods/*" | head -n 1)
+PROJECT=$(find . \
+  -name "*.xcodeproj" \
+  -not -path "*/Pods/*" \
+  | head -n 1)
 
 echo ""
 echo "======================================"
@@ -79,7 +86,11 @@ echo "--------------------------------------"
 echo "📱 Available Schemes"
 echo "--------------------------------------"
 
-SCHEMES=$(echo "$LIST_OUTPUT" | sed -n '/Schemes:/,$p' | tail -n +2 | sed '/^[[:space:]]*$/d' | sed 's/^[[:space:]]*//')
+SCHEMES=$(echo "$LIST_OUTPUT" |
+    sed -n '/Schemes:/,$p' |
+    tail -n +2 |
+    sed '/^[[:space:]]*$/d' |
+    sed 's/^[[:space:]]*//')
 
 if [ -z "$SCHEMES" ]; then
     echo "❌ No schemes found."
