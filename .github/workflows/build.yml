@@ -22,11 +22,6 @@ jobs:
         run: |
           git clone "https://github.com/$REPOSITORY.git" project
 
-      - name: Install mise
-        run: |
-          brew install mise
-          mise --version
-
       - name: Analyze Project
         run: |
           chmod +x scripts/analyze.sh
