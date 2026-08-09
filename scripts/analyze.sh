@@ -113,7 +113,140 @@ echo "======================================"
 echo "$SCHEME"
 
 # --------------------------------------------------
-# 5. Save Forge Configuration
+# 5. Detect Build Requirements
+# --------------------------------------------------
+
+echo ""
+echo "======================================"
+echo "🧠 Requirements Detection"
+echo "======================================"
+
+# Defaults
+FORGE_USE_SPM="false"
+FORGE_USE_COCOAPODS="false"
+FORGE_USE_CARTHAGE="false"
+FORGE_USE_MISE="false"
+
+# --------------------------------------------------
+# Swift Package Manager
+# --------------------------------------------------
+
+if find . \
+    -type f \
+    \( -name "Package.swift" -o -name "Package.resolved" \) \
+    -not -path "./.git/*" \
+    -not -path "./build/*" \
+    | grep -q .; then
+
+    FORGE_USE_SPM="true"
+
+elif find . \
+    -type f \
+    -name "project.pbxproj" \
+    -not -path "./.git/*" \
+    -not -path "./build/*" \
+    -exec grep -l \
+    -e "XCRemoteSwiftPackageReference" \
+    -e "XCLocalSwiftPackageReference" \
+    {} + \
+    | grep -q .; then
+
+    FORGE_USE_SPM="true"
+
+fi
+
+# --------------------------------------------------
+# CocoaPods
+# --------------------------------------------------
+
+if find . \
+    -type f \
+    -name "Podfile" \
+    -not -path "./.git/*" \
+    -not -path "./build/*" \
+    | grep -q .; then
+
+    FORGE_USE_COCOAPODS="true"
+
+fi
+
+# --------------------------------------------------
+# Carthage
+# --------------------------------------------------
+
+if find . \
+    -type f \
+    -name "Cartfile" \
+    -not -path "./.git/*" \
+    -not -path "./build/*" \
+    | grep -q .; then
+
+    FORGE_USE_CARTHAGE="true"
+
+fi
+
+# --------------------------------------------------
+# mise
+# --------------------------------------------------
+
+if find . \
+    -type f \
+    \( \
+        -name ".mise.toml" \
+        -o -name "mise.toml" \
+        -o -name ".mise.local.toml" \
+        -o -name "mise.local.toml" \
+    \) \
+    -not -path "./.git/*" \
+    -not -path "./build/*" \
+    | grep -q .; then
+
+    FORGE_USE_MISE="true"
+
+fi
+
+# --------------------------------------------------
+# Requirements Report
+# --------------------------------------------------
+
+echo ""
+echo "--------------------------------------"
+echo "📋 Detected Requirements"
+echo "--------------------------------------"
+
+echo "Swift Package Manager:"
+if [ "$FORGE_USE_SPM" = "true" ]; then
+    echo "✅ Required"
+else
+    echo "❌ Not detected"
+fi
+
+echo ""
+echo "CocoaPods:"
+if [ "$FORGE_USE_COCOAPODS" = "true" ]; then
+    echo "✅ Required"
+else
+    echo "❌ Not detected"
+fi
+
+echo ""
+echo "Carthage:"
+if [ "$FORGE_USE_CARTHAGE" = "true" ]; then
+    echo "✅ Required"
+else
+    echo "❌ Not detected"
+fi
+
+echo ""
+echo "mise:"
+if [ "$FORGE_USE_MISE" = "true" ]; then
+    echo "✅ Required"
+else
+    echo "❌ Not detected"
+fi
+
+# --------------------------------------------------
+# 6. Save Forge Configuration
 # --------------------------------------------------
 
 CONFIG_FILE="build/forge.env"
@@ -122,6 +255,11 @@ cat > "$CONFIG_FILE" <<EOF
 FORGE_BUILD_TYPE="$BUILD_TYPE"
 FORGE_BUILD_FILE="$BUILD_FILE"
 FORGE_SCHEME="$SCHEME"
+
+FORGE_USE_SPM="$FORGE_USE_SPM"
+FORGE_USE_COCOAPODS="$FORGE_USE_COCOAPODS"
+FORGE_USE_CARTHAGE="$FORGE_USE_CARTHAGE"
+FORGE_USE_MISE="$FORGE_USE_MISE"
 EOF
 
 echo ""
