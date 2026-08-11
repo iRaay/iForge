@@ -215,11 +215,75 @@ if [ "$FORGE_USE_CARTHAGE" = "true" ]; then
 
     echo ""
     echo "======================================"
-    echo "🛒 Carthage"
+    echo "🛒 Carthage Required"
     echo "======================================"
 
-    echo "⚠️ Carthage detected."
-    echo "Automatic installation will be handled by Forge."
+    # ----------------------------------------------
+    # 5.1 Install Carthage if required
+    # ----------------------------------------------
+
+    if command -v carthage >/dev/null 2>&1; then
+
+        echo "✅ Carthage already installed"
+        carthage version
+
+    else
+
+        echo "📦 Installing Carthage..."
+
+        brew install carthage
+
+        echo ""
+        echo "✅ Carthage installed"
+        carthage version
+
+    fi
+
+    # ----------------------------------------------
+    # 5.2 Validate Cartfile
+    # ----------------------------------------------
+
+    if [ ! -f "Cartfile" ]; then
+
+        echo ""
+        echo "❌ Carthage was detected, but Cartfile is missing."
+        exit 1
+
+    fi
+
+    echo ""
+    echo "📄 Cartfile detected:"
+    cat Cartfile
+
+    # ----------------------------------------------
+    # 5.3 Resolve and build Carthage dependencies
+    # ----------------------------------------------
+
+    echo ""
+    echo "🔄 Resolving Carthage dependencies..."
+
+    carthage update \
+        --platform iOS \
+        --use-xcframeworks
+
+    # ----------------------------------------------
+    # 5.4 Validate Carthage output
+    # ----------------------------------------------
+
+    if [ ! -d "Carthage/Build" ]; then
+
+        echo ""
+        echo "❌ Carthage completed, but Carthage/Build was not created."
+        exit 1
+
+    fi
+
+    echo ""
+    echo "✅ Carthage dependencies ready"
+
+    echo ""
+    echo "📦 Carthage build output:"
+    find Carthage/Build -maxdepth 2 -type d -name "*.xcframework" -print
 
 else
 
