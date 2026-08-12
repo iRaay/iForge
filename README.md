@@ -1,6 +1,6 @@
 <div align="center">
 
-# ⚒ Forge
+# ⚒ iForge
 
 > **Build once. Sign anywhere.**
 
@@ -12,19 +12,19 @@
 
 ---
 
-Forge is an open-source automation engine designed to build supported iOS projects from GitHub repositories and produce an unsigned IPA ready for external signing.
+iForge is an open-source automation engine designed to build supported iOS projects from GitHub repositories and produce an unsigned IPA ready for external signing.
 
 No local Xcode setup.
 
-No Apple Developer account required by Forge.
+No Apple Developer account required by iForge.
 
 No certificates or provisioning profiles required by the core build pipeline.
 
-Just provide a GitHub repository and let Forge handle the build process.
+Just provide a GitHub repository and let iForge handle the build process.
 
 ---
 
-## ✨ Why Forge?
+## ✨ Why iForge?
 
 Building iOS projects outside Xcode can be complicated.
 
@@ -36,7 +36,7 @@ Every project can have different:
 - Dependencies
 - Build configurations
 
-Forge is designed to remove as much of that manual work as possible.
+iForge is designed to remove as much of that manual work as possible.
 
 Its mission is simple:
 
@@ -63,15 +63,15 @@ Signing is your choice.
 
 ## 🎯 Philosophy
 
-Forge intentionally separates **building** from **signing**.
+iForge intentionally separates **building** from **signing**.
 
-Forge is responsible for preparing and building the application.
+iForge is responsible for preparing and building the application.
 
 The signing process is intentionally kept outside the core build pipeline.
 
 This allows developers to use the signing solution that best fits their workflow.
 
-**Forge builds. You decide how to sign.**
+**iForge builds. You decide how to sign.**
 
 ---
 
@@ -101,15 +101,15 @@ This allows developers to use the signing solution that best fits their workflow
 
 ## ⚡ Quick Start
 
-Forge currently runs through GitHub Actions.
+iForge currently runs through GitHub Actions.
 
 ### 1. Open Actions
 
-Open the **Actions** tab in the Forge repository.
+Open the **Actions** tab in the iForge repository.
 
-### 2. Select Forge
+### 2. Select iForge
 
-Choose the **Forge** workflow.
+Choose the **iForge** workflow.
 
 ### 3. Run the workflow
 
@@ -125,9 +125,9 @@ For example:
 
 `iRaay/Navi`
 
-### 5. Run Forge
+### 5. Run iForge
 
-Forge will:
+iForge will:
 
 - Clone the repository
 - Analyze the project
@@ -142,13 +142,17 @@ Forge will:
 
 After the workflow completes, open the workflow artifacts.
 
-You will find:
+The generated IPA is named automatically from the detected `.app` bundle. For example:
 
-`Forge-unsigned-ipa`
+`Navi.app` → `Navi.ipa`
 
-containing:
+`SimpleApp.app` → `SimpleApp.ipa`
 
-`Forge-unsigned.ipa`
+`*.app` → `*.ipa`
+
+For the iForge application itself:
+
+`iForge.app` → `iForge-Build.ipa`
 
 The resulting IPA can then be signed using the signing tool of your choice.
 
@@ -156,7 +160,7 @@ The resulting IPA can then be signed using the signing tool of your choice.
 
 ## 📱 Signing
 
-Signing is intentionally outside Forge's core build pipeline.
+Signing is intentionally outside iForge's core build pipeline.
 
 The generated unsigned IPA can be passed to compatible signing tools such as:
 
@@ -166,17 +170,17 @@ The generated unsigned IPA can be passed to compatible signing tools such as:
 - Sideloadly
 - Other compatible signing solutions
 
-Forge does not require a signing certificate or provisioning profile to generate the unsigned IPA.
+iForge does not require a signing certificate or provisioning profile to generate the unsigned IPA.
 
 ---
 
 ## 🔒 Current Status
 
-### Forge v0.1.0
+### iForge v0.1.0
 
 **Stable Baseline**
 
-The first stable working Forge pipeline includes:
+The first stable working iForge pipeline includes:
 
 - Automatic project detection
 - Automatic scheme detection
@@ -186,7 +190,7 @@ The first stable working Forge pipeline includes:
 - GitHub Actions support
 - Artifact upload
 
-This release establishes the foundation for future Forge development.
+This release establishes the foundation for future iForge development.
 
 ---
 
@@ -215,7 +219,7 @@ This release establishes the foundation for future Forge development.
 - Better target detection
 - Improved project selection
 
-### v1.0 — Forge Engine
+### v1.0 — iForge Engine
 
 - Stable automation engine
 - Reliable project analysis
@@ -239,7 +243,7 @@ These features are intentionally kept outside the core build engine.
 
 ## 🏗 Architecture
 
-The core Forge structure:
+The core iForge structure:
 
 - `.github/workflows/` — GitHub Actions workflows
 - `scripts/analyze.sh` — Project analysis
@@ -260,11 +264,11 @@ Each stage has a specific responsibility.
 
 ## ⚠️ Current Limitations
 
-Forge v0.1.0 is an early stable baseline.
+iForge v0.1.0 is an early stable baseline.
 
 The current release focuses on projects that can be successfully analyzed and built using Apple's Xcode command-line tools.
 
-Some projects may require additional configuration, dependencies, or build settings that are not yet automatically handled by Forge.
+Some projects may require additional configuration, dependencies, or build settings that are not yet automatically handled by iForge.
 
 Project detection and scheme selection will continue to improve in future releases.
 
@@ -272,19 +276,19 @@ Project detection and scheme selection will continue to improve in future releas
 
 ## 🌍 Vision
 
-Forge aims to become a portable and extensible build engine for iOS projects.
+iForge aims to become a portable and extensible build engine for iOS projects.
 
 The long-term goal is simple:
 
-> **Give Forge a GitHub repository and receive a ready-to-sign build without opening Xcode.**
+> **Give iForge a GitHub repository and receive a ready-to-sign build without opening Xcode.**
 
-Forge is designed to evolve beyond a single GitHub Actions workflow and eventually support different CI environments and build workflows.
+iForge is designed to evolve beyond a single GitHub Actions workflow and eventually support different CI environments and build workflows.
 
 ---
 
 ## ❤️ Open Source
 
-Forge is built for developers who love automation, open-source software, and clean build pipelines.
+iForge is built for developers who love automation, open-source software, and clean build pipelines.
 
 Contributions are welcome.
 
@@ -296,9 +300,9 @@ You can help by:
 - Adding plugins
 - Fixing bugs
 - Improving documentation
-- Testing Forge with different iOS projects
+- Testing iForge with different iOS projects
 
-Every contribution helps Forge become better for the entire community.
+Every contribution helps iForge become better for the entire community.
 
 ---
 
@@ -310,7 +314,7 @@ MIT License
 
 <div align="center">
 
-**⚒ Forge — Build once. Sign anywhere.**
+**⚒ iForge — Build once. Sign anywhere.**
 
 <a href="README.md">🇬🇧 EN</a> · <a href="README.ar.md">🇸🇦 AR</a>
 
