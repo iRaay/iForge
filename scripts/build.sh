@@ -2,28 +2,19 @@
 set -e
 
 echo "======================================"
-echo "⚒ Forge — Build"
+echo "⚒ iForge — Build"
 echo "======================================"
 
 cd project
 
-# --------------------------------------------------
-# 1. Load Forge Configuration
-# --------------------------------------------------
-
 CONFIG_FILE="build/forge.env"
 
 if [ ! -f "$CONFIG_FILE" ]; then
-    echo "❌ Forge configuration not found:"
-    echo "$CONFIG_FILE"
+    echo "❌ iForge configuration not found."
     exit 1
 fi
 
 source "$CONFIG_FILE"
-
-# --------------------------------------------------
-# 2. Validate Configuration
-# --------------------------------------------------
 
 if [ -z "$FORGE_BUILD_TYPE" ]; then
     echo "❌ FORGE_BUILD_TYPE is missing."
@@ -42,63 +33,35 @@ fi
 
 echo ""
 echo "======================================"
-echo "📋 Forge Configuration"
+echo "📋 iForge Configuration"
 echo "======================================"
-
 echo "Build Type:"
 echo "$FORGE_BUILD_TYPE"
-
 echo ""
 echo "Build File:"
 echo "$FORGE_BUILD_FILE"
-
 echo ""
 echo "Scheme:"
 echo "$FORGE_SCHEME"
 
-# --------------------------------------------------
-# 3. Prepare Build Directory
-# --------------------------------------------------
-
 mkdir -p build
-
 ARCHIVE_PATH="build/Forge.xcarchive"
 
 echo ""
 echo "======================================"
 echo "📦 Archive"
 echo "======================================"
-
 echo "Archive Path:"
 echo "$ARCHIVE_PATH"
 
-# --------------------------------------------------
-# 4. Build Arguments
-# --------------------------------------------------
-
 if [ "$FORGE_BUILD_TYPE" = "workspace" ]; then
-
-    BUILD_ARGUMENT=(
-        -workspace "$FORGE_BUILD_FILE"
-    )
-
+    BUILD_ARGUMENT=(-workspace "$FORGE_BUILD_FILE")
 elif [ "$FORGE_BUILD_TYPE" = "project" ]; then
-
-    BUILD_ARGUMENT=(
-        -project "$FORGE_BUILD_FILE"
-    )
-
+    BUILD_ARGUMENT=(-project "$FORGE_BUILD_FILE")
 else
-
-    echo "❌ Unknown build type:"
-    echo "$FORGE_BUILD_TYPE"
+    echo "❌ Unknown build type: $FORGE_BUILD_TYPE"
     exit 1
-
 fi
-
-# --------------------------------------------------
-# 5. Build & Archive
-# --------------------------------------------------
 
 xcodebuild \
 "${BUILD_ARGUMENT[@]}" \
@@ -112,9 +75,8 @@ archive
 
 echo ""
 echo "======================================"
-echo "✅ Archive Finished"
+echo "✅ iForge Archive Finished"
 echo "======================================"
-
 echo ""
 echo "Archive:"
 echo "$ARCHIVE_PATH"

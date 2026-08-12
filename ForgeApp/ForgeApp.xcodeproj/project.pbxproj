@@ -17,7 +17,7 @@
 		A20000010000000000000002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		A20000010000000000000003 /* IPAFilesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IPAFilesView.swift; sourceTree = "<group>"; };
 		A20000010000000000000010 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		A20000010000000000000020 /* Forge.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Forge.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A20000010000000000000020 /* iForge.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iForge.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -53,7 +53,7 @@
 		A40000010000000000000003 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				A20000010000000000000020 /* Forge.app */,
+				A20000010000000000000020 /* iForge.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -61,9 +61,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		A50000010000000000000001 /* Forge */ = {
+		A50000010000000000000001 /* iForge */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A60000010000000000000002 /* Build configuration list for PBXNativeTarget "Forge" */;
+			buildConfigurationList = A60000010000000000000002 /* Build configuration list for PBXNativeTarget "iForge" */;
 			buildPhases = (
 				A30000010000000000000002 /* Sources */,
 				A30000010000000000000001 /* Frameworks */,
@@ -73,9 +73,9 @@
 			);
 			dependencies = (
 			);
-			name = Forge;
-			productName = Forge;
-			productReference = A20000010000000000000020 /* Forge.app */;
+			name = iForge;
+			productName = iForge;
+			productReference = A20000010000000000000020 /* iForge.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -92,7 +92,7 @@
 					};
 				};
 			};
-			buildConfigurationList = A60000010000000000000001 /* Build configuration list for PBXProject "Forge" */;
+			buildConfigurationList = A60000010000000000000001 /* Build configuration list for PBXProject "iForge" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -105,7 +105,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				A50000010000000000000001 /* Forge */,
+				A50000010000000000000001 /* iForge */,
 			);
 		};
 /* End PBXProject section */
@@ -162,8 +162,8 @@
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = ForgeApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.iraay.forge;
-				PRODUCT_NAME = Forge;
+				PRODUCT_BUNDLE_IDENTIFIER = com.iraay.iForgeBuild;
+				PRODUCT_NAME = iForge;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -179,8 +179,8 @@
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = ForgeApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.iraay.forge;
-				PRODUCT_NAME = Forge;
+				PRODUCT_BUNDLE_IDENTIFIER = com.iraay.iForgeBuild;
+				PRODUCT_NAME = iForge;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -189,7 +189,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		A60000010000000000000001 /* Build configuration list for PBXProject "Forge" */ = {
+		A60000010000000000000001 /* Build configuration list for PBXProject "iForge" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A80000010000000000000001 /* Debug */,
@@ -198,7 +198,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A60000010000000000000002 /* Build configuration list for PBXNativeTarget "Forge" */ = {
+		A60000010000000000000002 /* Build configuration list for PBXNativeTarget "iForge" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A80000010000000000000003 /* Debug */,

@@ -57,7 +57,7 @@ struct ContentView: View {
 
     private var header: some View {
         HStack {
-            Text("Forge")
+            Text("iForge")
                 .font(.largeTitle.bold())
             Spacer()
             Image(systemName: "gearshape")

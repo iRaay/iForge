@@ -1,41 +1,41 @@
-name: Forge iOS App
+name: iForge Build
 
 on:
   workflow_dispatch:
 
 jobs:
-  build-forge-app:
+  build-iforge-app:
     runs-on: macos-latest
     steps:
-      - name: Checkout Forge
+      - name: Checkout iForge
         uses: actions/checkout@v4
 
-      - name: Build Forge archive
+      - name: Build iForge archive
         run: |
           xcodebuild \
             -project ForgeApp/ForgeApp.xcodeproj \
-            -scheme Forge \
+            -scheme iForge \
             -configuration Release \
             -sdk iphoneos \
-            -archivePath build/Forge.xcarchive \
+            -archivePath build/iForge.xcarchive \
             CODE_SIGNING_ALLOWED=NO \
             archive
 
-      - name: Create unsigned IPA
+      - name: Create iForge IPA
         run: |
           set -e
-          APP_PATH="build/Forge.xcarchive/Products/Applications/Forge.app"
+          APP_PATH="build/iForge.xcarchive/Products/Applications/iForge.app"
           STAGING="build/ipa-staging"
           mkdir -p "$STAGING/Payload" build/export
-          rm -rf "$STAGING/Payload/Forge.app"
-          cp -R "$APP_PATH" "$STAGING/Payload/Forge.app"
+          rm -rf "$STAGING/Payload/iForge.app"
+          cp -R "$APP_PATH" "$STAGING/Payload/iForge.app"
           cd "$STAGING"
-          zip -qry "../export/Forge.ipa" Payload
+          zip -qry "../export/iForge-Build.ipa" Payload
 
-      - name: Upload Forge IPA
+      - name: Upload iForge IPA
         uses: actions/upload-artifact@v4
         with:
-          name: Forge-ipa
-          path: build/export/Forge.ipa
+          name: iForge-Build-ipa
+          path: build/export/iForge-Build.ipa
           if-no-files-found: error
           retention-days: 14

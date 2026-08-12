@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "A50000010000000000000001"
-               BuildableName = "Forge.app"
-               BlueprintName = "Forge"
+               BuildableName = "iForge.app"
+               BlueprintName = "iForge"
                ReferencedContainer = "container:ForgeApp.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -33,13 +33,12 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <BuildableProductRunnable runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A50000010000000000000001"
-            BuildableName = "Forge.app"
-            BlueprintName = "Forge"
+            BuildableName = "iForge.app"
+            BlueprintName = "iForge"
             ReferencedContainer = "container:ForgeApp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

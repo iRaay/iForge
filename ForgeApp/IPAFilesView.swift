@@ -106,7 +106,9 @@ struct SettingsView: View {
                     Toggle("Build Failed", isOn: .constant(true))
                 }
                 Section("About") {
-                    LabeledContent("Forge", value: "1.0.0")
+                    LabeledContent("iForge", value: "1.0.0")
+                    LabeledContent("Product", value: "iForge Build")
+                    LabeledContent("Bundle ID", value: "com.iraay.iForgeBuild")
                 }
             }
             .navigationTitle("Settings")
