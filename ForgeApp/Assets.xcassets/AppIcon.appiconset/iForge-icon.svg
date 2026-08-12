@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+<defs>
+ <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#159BFF"/><stop offset="0.52" stop-color="#1768D8"/><stop offset="1" stop-color="#07134F"/></linearGradient>
+ <linearGradient id="metal" x1="0" y1="0" x2="0.8" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="0.55" stop-color="#F4F7FF"/><stop offset="1" stop-color="#C8D0DE"/></linearGradient>
+ <linearGradient id="cyan" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#19E7FF"/><stop offset="1" stop-color="#1777FF"/></linearGradient>
+ <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="18" stdDeviation="18" flood-opacity="0.35"/></filter>
+</defs>
+<rect width="1024" height="1024" rx="220" fill="url(#bg)"/>
+<g fill="none" stroke="#50B7FF" stroke-width="10" opacity="0.34"><circle cx="520" cy="510" r="330"/><circle cx="520" cy="510" r="270"/></g>
+<path d="M580 820 A330 330 0 0 0 850 420" fill="none" stroke="url(#cyan)" stroke-width="18" stroke-linecap="round" stroke-dasharray="12 30"/>
+<g filter="url(#shadow)"><circle cx="258" cy="350" r="48" fill="url(#cyan)"/><rect x="215" y="414" width="86" height="300" rx="43" fill="url(#cyan)"/><path d="M355 330 C405 255 500 225 595 260 L690 260 C725 260 745 280 745 310 L745 360 C745 390 725 410 695 410 L610 410 L560 465 L560 760 C560 785 540 805 515 805 L430 805 C405 805 385 785 385 760 L385 505 L350 505 C320 505 305 480 320 452 Z" fill="url(#metal)"/><rect x="560" y="310" width="175" height="100" rx="28" fill="url(#metal)"/></g>
+</svg>
