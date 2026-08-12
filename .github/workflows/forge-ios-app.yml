@@ -1,0 +1,41 @@
+name: Forge iOS App
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-forge-app:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout Forge
+        uses: actions/checkout@v4
+
+      - name: Build Forge archive
+        run: |
+          xcodebuild \
+            -project ForgeApp/ForgeApp.xcodeproj \
+            -scheme Forge \
+            -configuration Release \
+            -sdk iphoneos \
+            -archivePath build/Forge.xcarchive \
+            CODE_SIGNING_ALLOWED=NO \
+            archive
+
+      - name: Create unsigned IPA
+        run: |
+          set -e
+          APP_PATH="build/Forge.xcarchive/Products/Applications/Forge.app"
+          STAGING="build/ipa-staging"
+          mkdir -p "$STAGING/Payload" build/export
+          rm -rf "$STAGING/Payload/Forge.app"
+          cp -R "$APP_PATH" "$STAGING/Payload/Forge.app"
+          cd "$STAGING"
+          zip -qry "../export/Forge.ipa" Payload
+
+      - name: Upload Forge IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: Forge-ipa
+          path: build/export/Forge.ipa
+          if-no-files-found: error
+          retention-days: 14
