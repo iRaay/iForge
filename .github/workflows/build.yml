@@ -1,4 +1,4 @@
-name: Forge
+name: iForge Build
 
 on:
   workflow_dispatch:
@@ -6,21 +6,27 @@ on:
       repository:
         description: "GitHub repository (owner/repo)"
         required: true
+        type: string
+      branch:
+        description: "Branch to build"
+        required: true
+        default: "main"
+        type: string
 
 jobs:
   build:
     runs-on: macos-latest
 
     steps:
-
-      - name: Checkout Forge
+      - name: Checkout iForge
         uses: actions/checkout@v4
 
       - name: Clone Repository
         env:
           REPOSITORY: ${{ github.event.inputs.repository }}
+          BRANCH: ${{ github.event.inputs.branch }}
         run: |
-          git clone "https://github.com/$REPOSITORY.git" project
+          git clone --branch "$BRANCH" "https://github.com/$REPOSITORY.git" project
 
       - name: Analyze Project
         run: |
@@ -37,15 +43,28 @@ jobs:
           chmod +x scripts/build.sh
           ./scripts/build.sh
 
-      - name: Export Unsigned IPA
+      - name: Export IPA
         run: |
           chmod +x scripts/export.sh
           ./scripts/export.sh
 
-      - name: Upload Unsigned IPA
+      - name: Detect IPA
+        id: ipa
+        run: |
+          IPA_PATH=$(find project/build/export -maxdepth 1 -type f -name "*.ipa" -print -quit)
+          if [ -z "$IPA_PATH" ]; then
+            echo "❌ No IPA was generated."
+            exit 1
+          fi
+          IPA_NAME=$(basename "$IPA_PATH")
+          echo "path=$IPA_PATH" >> "$GITHUB_OUTPUT"
+          echo "name=$IPA_NAME" >> "$GITHUB_OUTPUT"
+          echo "IPA: $IPA_NAME"
+
+      - name: Upload IPA Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Forge-unsigned-ipa
-          path: project/build/export/Forge-unsigned.ipa
+          name: ${{ steps.ipa.outputs.name }}
+          path: ${{ steps.ipa.outputs.path }}
           if-no-files-found: error
-          retention-days: 7
+          retention-days: 14
