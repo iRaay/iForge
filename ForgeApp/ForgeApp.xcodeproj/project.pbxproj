@@ -47,7 +47,7 @@
 				A20000010000000000000003 /* IPAFilesView.swift */,
 				A20000010000000000000010 /* Info.plist */,
 			);
-			path = ForgeApp;
+			path = "";
 			sourceTree = "<group>";
 		};
 		A40000010000000000000003 /* Products */ = {
