@@ -180,8 +180,10 @@ while IFS= read -r SCHEME; do
         continue
     fi
 
-    if [ "$SDKROOT" != "iphoneos" ]; then
-        echo "❌ Rejected: SDKROOT is not iphoneos."
+    # Xcode reports versioned SDK roots such as "iphoneos26.5".
+    # Accept the version suffix while still rejecting macOS SDKs.
+    if ! echo "$SDKROOT" | grep -Eq '^iphoneos([0-9]+([.][0-9]+)*)?$'; then
+        echo "❌ Rejected: SDKROOT is not an iOS SDK: $SDKROOT"
         continue
     fi
 
