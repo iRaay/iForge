@@ -10,7 +10,8 @@ cd project
 CONFIG_FILE="build/forge.env"
 
 if [ ! -f "$CONFIG_FILE" ]; then
-    echo "❌ iForge configuration not found."
+    echo "❌ iForge configuration not found:"
+    echo "$CONFIG_FILE"
     exit 1
 fi
 
@@ -36,10 +37,11 @@ print_build_error() {
     echo ""
     echo "Configuration:"
     echo "Scheme: $FORGE_SCHEME"
-    echo "Configuration: $FORGE_CONFIGURATION"
-    echo "Clean Build: $FORGE_CLEAN_BUILD"
+    echo "Configuration: ${FORGE_CONFIGURATION:-Release}"
+    echo "Clean Build: ${FORGE_CLEAN_BUILD:-false}"
 
     if [ -f "$LOG_FILE" ]; then
+
         echo ""
         echo "--------------------------------------"
         echo "📋 Last 100 Log Lines"
@@ -53,7 +55,7 @@ print_build_error() {
         echo "--------------------------------------"
 
         grep -E \
-            "error:|fatal error:|BUILD FAILED|ARCHIVE FAILED" \
+            "error:|fatal error:|BUILD FAILED|ARCHIVE FAILED|Unable to find a destination" \
             "$LOG_FILE" \
             | tail -n 50 \
             || true
@@ -72,6 +74,9 @@ trap print_build_error ERR
 # Configuration
 # --------------------------------------------------
 
+FORGE_CONFIGURATION="${FORGE_CONFIGURATION:-Release}"
+FORGE_CLEAN_BUILD="${FORGE_CLEAN_BUILD:-false}"
+
 if [ -z "${FORGE_BUILD_TYPE:-}" ]; then
     echo "❌ FORGE_BUILD_TYPE is missing."
     exit 1
@@ -86,9 +91,6 @@ if [ -z "${FORGE_SCHEME:-}" ]; then
     echo "❌ FORGE_SCHEME is missing."
     exit 1
 fi
-
-FORGE_CONFIGURATION="${FORGE_CONFIGURATION:-Release}"
-FORGE_CLEAN_BUILD="${FORGE_CLEAN_BUILD:-false}"
 
 ARCHIVE_PATH="build/Forge.xcarchive"
 DERIVED_DATA_PATH="build/DerivedData"
@@ -159,7 +161,8 @@ elif [ "$FORGE_BUILD_TYPE" = "project" ]; then
 
 else
 
-    echo "❌ Unknown build type: $FORGE_BUILD_TYPE"
+    echo "❌ Unknown build type:"
+    echo "$FORGE_BUILD_TYPE"
     exit 1
 
 fi
@@ -173,12 +176,17 @@ echo "======================================"
 echo "📦 Xcode Archive"
 echo "======================================"
 
+echo ""
+echo "🎯 iOS destination:"
+echo "generic/platform=iOS"
+
 set +e
 
 xcodebuild \
     "${BUILD_ARGUMENT[@]}" \
     -scheme "$FORGE_SCHEME" \
     -configuration "$FORGE_CONFIGURATION" \
+    -sdk iphoneos \
     -destination "generic/platform=iOS" \
     -derivedDataPath "$DERIVED_DATA_PATH" \
     -archivePath "$ARCHIVE_PATH" \
