@@ -1,73 +1,51 @@
 #!/bin/bash
 set -euo pipefail
 
+# iForge — iOS Project Analyzer
+# A: Smart Scheme Selection
+# F: Analysis produces the build configuration consumed by build.sh
+
 echo "======================================"
 echo "⚒ iForge — iOS Project Analyzer"
 echo "======================================"
 
 cd project
-
 mkdir -p build/logs
 
 CONFIGURATION="${CONFIGURATION:-Release}"
 CLEAN_BUILD="${CLEAN_BUILD:-false}"
 
-echo ""
-echo "======================================"
-echo "📁 Project"
-echo "======================================"
-pwd
-
 # --------------------------------------------------
 # 1. Detect Workspace / Project
 # --------------------------------------------------
 
-WORKSPACE=$(find . \
-  -type d \
-  -name "*.xcworkspace" \
-  -not -path "./.git/*" \
-  -not -path "./build/*" \
-  -print \
-  | sort \
-  | head -n 1)
+WORKSPACE=$(find . -type d -name "*.xcworkspace" \
+  -not -path "./.git/*" -not -path "./build/*" -print | sort | head -n 1)
 
-PROJECT=$(find . \
-  -type d \
-  -name "*.xcodeproj" \
-  -not -path "./.git/*" \
-  -not -path "./build/*" \
-  -print \
-  | sort \
-  | head -n 1)
-
-echo ""
-echo "======================================"
-echo "🔍 Project Detection"
-echo "======================================"
+PROJECT=$(find . -type d -name "*.xcodeproj" \
+  -not -path "./.git/*" -not -path "./build/*" -print | sort | head -n 1)
 
 if [ -n "$WORKSPACE" ]; then
     BUILD_TYPE="workspace"
     BUILD_FILE="$WORKSPACE"
-    echo "✅ Workspace:"
-    echo "$WORKSPACE"
 elif [ -n "$PROJECT" ]; then
     BUILD_TYPE="project"
     BUILD_FILE="$PROJECT"
-    echo "✅ Project:"
-    echo "$PROJECT"
 else
     echo "❌ No .xcworkspace or .xcodeproj found."
     exit 1
 fi
 
+echo ""
+echo "======================================"
+echo "🔍 Project Detection"
+echo "======================================"
+echo "Build Type: $BUILD_TYPE"
+echo "Build File: $BUILD_FILE"
+
 # --------------------------------------------------
 # 2. xcodebuild -list
 # --------------------------------------------------
-
-echo ""
-echo "======================================"
-echo "📋 Xcode Project Information"
-echo "======================================"
 
 if [ "$BUILD_TYPE" = "workspace" ]; then
     LIST_OUTPUT=$(xcodebuild -list -workspace "$BUILD_FILE" 2>&1)
@@ -75,44 +53,32 @@ else
     LIST_OUTPUT=$(xcodebuild -list -project "$BUILD_FILE" 2>&1)
 fi
 
+echo ""
+echo "======================================"
+echo "📋 Xcode Project Information"
+echo "======================================"
 echo "$LIST_OUTPUT"
 
 # --------------------------------------------------
-# 3. Extract Targets
-# --------------------------------------------------
-# xcodebuild -list indents section headers (for example "    Targets:").
-# Match optional leading/trailing whitespace so parsing is independent
-# of Xcode's formatting/indentation.
-
-TARGETS=$(echo "$LIST_OUTPUT" |
-    awk '
-        /^[[:space:]]*Targets:[[:space:]]*$/ {inside=1; next}
-        /^[[:space:]]*Build Configurations:[[:space:]]*$/ {inside=0}
-        /^[[:space:]]*Schemes:[[:space:]]*$/ {inside=0}
-        inside && /^[[:space:]]+[^[:space:]]/ {
-            gsub(/^[[:space:]]+/, "")
-            print
-        }
-    ')
-
-# --------------------------------------------------
-# 4. Extract Schemes
+# 3. Extract Targets and Schemes
 # --------------------------------------------------
 
-SCHEMES=$(echo "$LIST_OUTPUT" |
-    awk '
-        /^[[:space:]]*Schemes:[[:space:]]*$/ {inside=1; next}
-        inside && /^[[:space:]]+[^[:space:]]/ {
-            gsub(/^[[:space:]]+/, "")
-            print
-        }
-    ')
+TARGETS=$(echo "$LIST_OUTPUT" | awk '
+    /^[[:space:]]*Targets:[[:space:]]*$/ {inside=1; next}
+    /^[[:space:]]*Build Configurations:[[:space:]]*$/ {inside=0}
+    /^[[:space:]]*Schemes:[[:space:]]*$/ {inside=0}
+    inside && /^[[:space:]]+[^[:space:]]/ {gsub(/^[[:space:]]+/, ""); print}
+')
+
+SCHEMES=$(echo "$LIST_OUTPUT" | awk '
+    /^[[:space:]]*Schemes:[[:space:]]*$/ {inside=1; next}
+    inside && /^[[:space:]]+[^[:space:]]/ {gsub(/^[[:space:]]+/, ""); print}
+')
 
 if [ -z "$SCHEMES" ]; then
     echo ""
     echo "❌ No schemes found."
     echo ""
-    echo "Debug: xcodebuild reported the following list:"
     echo "$LIST_OUTPUT"
     exit 1
 fi
@@ -121,147 +87,159 @@ echo ""
 echo "======================================"
 echo "🎯 Targets"
 echo "======================================"
-
-if [ -n "$TARGETS" ]; then
-    echo "$TARGETS"
-else
-    echo "⚠️ No targets detected."
-fi
+echo "${TARGETS:-No targets detected.}"
 
 echo ""
 echo "======================================"
 echo "🎯 Available Schemes"
 echo "======================================"
-
 echo "$SCHEMES"
 
 # --------------------------------------------------
-# 5. Smart Scheme Scoring
+# 4. Helpers
 # --------------------------------------------------
 
-echo ""
-echo "======================================"
-echo "🧠 Smart Scheme Selection"
-echo "======================================"
+xcode_settings() {
+    local scheme="$1"
+
+    if [ "$BUILD_TYPE" = "workspace" ]; then
+        xcodebuild -workspace "$BUILD_FILE" \
+            -scheme "$scheme" \
+            -configuration "$CONFIGURATION" \
+            -sdk iphoneos \
+            -showBuildSettings 2>&1
+    else
+        xcodebuild -project "$BUILD_FILE" \
+            -scheme "$scheme" \
+            -configuration "$CONFIGURATION" \
+            -sdk iphoneos \
+            -showBuildSettings 2>&1
+    fi
+}
+
+setting_value() {
+    local key="$1"
+    awk -F'= ' -v key="$key" '$1 ~ "^[[:space:]]*" key "[[:space:]]*$" {print $2; exit}'
+}
+
+# --------------------------------------------------
+# 5. Smart Scheme Selection
+# --------------------------------------------------
+# A/5 is a hard eligibility gate, not a score penalty:
+# a scheme that cannot build an iOS application is rejected.
 
 BEST_SCHEME=""
 BEST_SCORE=-999999
 BEST_REASON=""
 
 while IFS= read -r SCHEME; do
-
     [ -z "$SCHEME" ] && continue
 
-    SCORE=0
-    REASONS=""
+    echo ""
+    echo "--------------------------------------"
+    echo "🔎 Evaluating Scheme: $SCHEME"
+    echo "--------------------------------------"
 
     LOWER=$(echo "$SCHEME" | tr '[:upper:]' '[:lower:]')
 
-    # ----------------------------------------------
-    # Exact Target Match
-    # ----------------------------------------------
+    SETTINGS_OUTPUT=""
+    SETTINGS_STATUS=0
 
-    if echo "$TARGETS" | grep -Fxq "$SCHEME"; then
+    if SETTINGS_OUTPUT=$(xcode_settings "$SCHEME"); then
+        SETTINGS_STATUS=0
+    else
+        SETTINGS_STATUS=$?
+    fi
+
+    if [ "$SETTINGS_STATUS" -ne 0 ]; then
+        echo "❌ Rejected: xcodebuild -showBuildSettings failed for iOS SDK."
+        echo "$SETTINGS_OUTPUT" | tail -n 20
+        continue
+    fi
+
+    SDKROOT=$(echo "$SETTINGS_OUTPUT" | setting_value "SDKROOT")
+    PLATFORM_NAME=$(echo "$SETTINGS_OUTPUT" | setting_value "PLATFORM_NAME")
+    SUPPORTED_PLATFORMS=$(echo "$SETTINGS_OUTPUT" | setting_value "SUPPORTED_PLATFORMS")
+    PRODUCT_TYPE=$(echo "$SETTINGS_OUTPUT" | setting_value "PRODUCT_TYPE")
+    TARGET_NAME=$(echo "$SETTINGS_OUTPUT" | setting_value "TARGET_NAME")
+    PRODUCT_NAME=$(echo "$SETTINGS_OUTPUT" | setting_value "PRODUCT_NAME")
+    SUPPORTS_MACCATALYST=$(echo "$SETTINGS_OUTPUT" | setting_value "SUPPORTS_MACCATALYST")
+
+    echo "SDKROOT: $SDKROOT"
+    echo "PLATFORM_NAME: $PLATFORM_NAME"
+    echo "SUPPORTED_PLATFORMS: $SUPPORTED_PLATFORMS"
+    echo "PRODUCT_TYPE: $PRODUCT_TYPE"
+    echo "TARGET_NAME: $TARGET_NAME"
+
+    # --------------------------------------------------
+    # A/5 — iOS eligibility gate
+    # --------------------------------------------------
+
+    if ! echo "$SUPPORTED_PLATFORMS" | grep -Eq '(^|[[:space:]])iphoneos([[:space:]]|$)'; then
+        echo "❌ Rejected: scheme does not support iphoneos."
+        continue
+    fi
+
+    if [ "$SDKROOT" != "iphoneos" ]; then
+        echo "❌ Rejected: SDKROOT is not iphoneos."
+        continue
+    fi
+
+    if [ "$PLATFORM_NAME" != "iphoneos" ]; then
+        echo "❌ Rejected: PLATFORM_NAME is not iphoneos."
+        continue
+    fi
+
+    # We are building an IPA, so the selected product must be an application.
+    if [ "$PRODUCT_TYPE" != "com.apple.product-type.application" ]; then
+        echo "❌ Rejected: product is not an iOS application."
+        continue
+    fi
+
+    # --------------------------------------------------
+    # Name-based safety filters
+    # --------------------------------------------------
+
+    if echo "$LOWER" | grep -Eq '(^|[-_ .])(test|tests|uitest|ui-test|ui_tests)([-_ .]|$)'; then
+        echo "❌ Rejected: test/UI-test scheme."
+        continue
+    fi
+
+    if echo "$LOWER" | grep -Eq '(watch|widget|extension|intent)'; then
+        echo "❌ Rejected: Watch/Widget/Extension/Intent scheme."
+        continue
+    fi
+
+    # --------------------------------------------------
+    # Score eligible iOS application schemes
+    # --------------------------------------------------
+
+    SCORE=100
+    REASONS="ios-compatible;application;"
+
+    if [ "$SCHEME" = "$TARGET_NAME" ] || echo "$TARGETS" | grep -Fxq "$SCHEME"; then
         SCORE=$((SCORE + 100))
         REASONS="$REASONS exact-target-match;"
     fi
 
-    # ----------------------------------------------
-    # App naming
-    # ----------------------------------------------
+    if [ -n "$TARGET_NAME" ] && [ "$SCHEME" = "$PRODUCT_NAME" ]; then
+        SCORE=$((SCORE + 30))
+        REASONS="$REASONS product-name-match;"
+    fi
 
     if echo "$LOWER" | grep -Eq 'app$|app[-_ ]'; then
         SCORE=$((SCORE + 25))
         REASONS="$REASONS app-name;"
     fi
 
-    # ----------------------------------------------
-    # Test / UI Test
-    # ----------------------------------------------
-
-    if echo "$LOWER" | grep -Eq 'test|tests|uitest|ui-test|ui_test'; then
-        SCORE=$((SCORE - 100))
-        REASONS="$REASONS test-target;"
+    if [ "$SUPPORTS_MACCATALYST" = "NO" ]; then
+        SCORE=$((SCORE + 10))
+        REASONS="$REASONS not-mac-catalyst;"
     fi
 
-    # ----------------------------------------------
-    # Watch / Widget / Extension
-    # ----------------------------------------------
-
-    if echo "$LOWER" | grep -Eq 'watch|widget|extension|intent'; then
-        SCORE=$((SCORE - 60))
-        REASONS="$REASONS extension-target;"
-    fi
-
-    # ----------------------------------------------
-    # Framework / Package
-    # ----------------------------------------------
-
-    if echo "$LOWER" | grep -Eq 'framework|package'; then
-        SCORE=$((SCORE - 50))
-        REASONS="$REASONS framework-package;"
-    fi
-
-    # ----------------------------------------------
-    # Verify build settings
-    # ----------------------------------------------
-
-    SETTINGS_OUTPUT=""
-
-    if [ "$BUILD_TYPE" = "workspace" ]; then
-        SETTINGS_OUTPUT=$(xcodebuild \
-            -workspace "$BUILD_FILE" \
-            -scheme "$SCHEME" \
-            -showBuildSettings \
-            2>/dev/null || true)
-    else
-        SETTINGS_OUTPUT=$(xcodebuild \
-            -project "$BUILD_FILE" \
-            -scheme "$SCHEME" \
-            -showBuildSettings \
-            2>/dev/null || true)
-    fi
-
-    SDKROOT=$(echo "$SETTINGS_OUTPUT" |
-        awk -F'= ' '/SDKROOT =/ {print $2; exit}')
-
-    PLATFORM_NAME=$(echo "$SETTINGS_OUTPUT" |
-        awk -F'= ' '/PLATFORM_NAME =/ {print $2; exit}')
-
-    PRODUCT_TYPE=$(echo "$SETTINGS_OUTPUT" |
-        awk -F'= ' '/PRODUCT_TYPE =/ {print $2; exit}')
-
-    # ----------------------------------------------
-    # iOS preference
-    # ----------------------------------------------
-
-    if echo "$SDKROOT" | grep -qi 'iphoneos'; then
-        SCORE=$((SCORE + 80))
-        REASONS="$REASONS ios-sdk;"
-    elif echo "$PLATFORM_NAME" | grep -qi 'iphoneos'; then
-        SCORE=$((SCORE + 80))
-        REASONS="$REASONS ios-platform;"
-    elif echo "$SDKROOT" | grep -qi 'macos'; then
-        SCORE=$((SCORE - 100))
-        REASONS="$REASONS macos-sdk;"
-    fi
-
-    # ----------------------------------------------
-    # Application product type
-    # ----------------------------------------------
-
-    if echo "$PRODUCT_TYPE" | grep -qi 'com.apple.product-type.application'; then
-        SCORE=$((SCORE + 80))
-        REASONS="$REASONS application-product;"
-    fi
-
-    echo ""
-    echo "Scheme: $SCHEME"
-    echo "Score:  $SCORE"
-
-    if [ -n "$REASONS" ]; then
-        echo "Reason: $REASONS"
-    fi
+    echo "✅ Eligible iOS application"
+    echo "Score: $SCORE"
+    echo "Reason: $REASONS"
 
     if [ "$SCORE" -gt "$BEST_SCORE" ]; then
         BEST_SCORE="$SCORE"
@@ -273,25 +251,27 @@ done <<< "$SCHEMES"
 
 if [ -z "$BEST_SCHEME" ]; then
     echo ""
-    echo "❌ Unable to select a suitable iOS scheme."
+    echo "======================================"
+    echo "❌ No iOS application Scheme found"
+    echo "======================================"
+    echo "Every discovered Scheme was rejected by the iOS eligibility checks."
     exit 1
 fi
 
 # --------------------------------------------------
-# 6. Final Scheme
+# 6. Final Selection
 # --------------------------------------------------
 
 echo ""
 echo "======================================"
 echo "🏆 Selected Scheme"
 echo "======================================"
-
 echo "Scheme: $BEST_SCHEME"
-echo "Score:  $BEST_SCORE"
+echo "Score: $BEST_SCORE"
 echo "Reason: $BEST_REASON"
 
 # --------------------------------------------------
-# 7. Requirements Detection
+# 7. Dependency Detection
 # --------------------------------------------------
 
 FORGE_USE_SPM="false"
@@ -299,67 +279,33 @@ FORGE_USE_COCOAPODS="false"
 FORGE_USE_CARTHAGE="false"
 FORGE_USE_MISE="false"
 
-if find . \
-    -type f \
-    \( -name "Package.swift" -o -name "Package.resolved" \) \
-    -not -path "./.git/*" \
-    -not -path "./build/*" \
-    | grep -q .; then
-
+if find . -type f \( -name "Package.swift" -o -name "Package.resolved" \) \
+    -not -path "./.git/*" -not -path "./build/*" | grep -q .; then
     FORGE_USE_SPM="true"
-
-elif find . \
-    -type f \
-    -name "project.pbxproj" \
-    -not -path "./.git/*" \
-    -not -path "./build/*" \
-    -exec grep -l \
-    -e "XCRemoteSwiftPackageReference" \
-    -e "XCLocalSwiftPackageReference" \
-    {} + \
+elif find . -type f -name "project.pbxproj" \
+    -not -path "./.git/*" -not -path "./build/*" \
+    -exec grep -l -e "XCRemoteSwiftPackageReference" -e "XCLocalSwiftPackageReference" {} + \
     | grep -q .; then
-
     FORGE_USE_SPM="true"
 fi
 
-if find . \
-    -type f \
-    -name "Podfile" \
-    -not -path "./.git/*" \
-    -not -path "./build/*" \
-    | grep -q .; then
-
+if find . -type f -name "Podfile" -not -path "./.git/*" -not -path "./build/*" | grep -q .; then
     FORGE_USE_COCOAPODS="true"
 fi
 
-if find . \
-    -type f \
-    -name "Cartfile" \
-    -not -path "./.git/*" \
-    -not -path "./build/*" \
-    | grep -q .; then
-
+if find . -type f -name "Cartfile" -not -path "./.git/*" -not -path "./build/*" | grep -q .; then
     FORGE_USE_CARTHAGE="true"
 fi
 
-if find . \
-    -type f \
-    \( \
-        -name ".mise.toml" \
-        -o -name "mise.toml" \
-        -o -name ".mise.local.toml" \
-        -o -name "mise.local.toml" \
-    \) \
-    -not -path "./.git/*" \
-    -not -path "./build/*" \
-    | grep -q .; then
-
+if find . -type f \( -name ".mise.toml" -o -name "mise.toml" -o -name ".mise.local.toml" -o -name "mise.local.toml" \) \
+    -not -path "./.git/*" -not -path "./build/*" | grep -q .; then
     FORGE_USE_MISE="true"
 fi
 
 # --------------------------------------------------
-# 8. Save Build Configuration
+# 8. Persist Analysis Result
 # --------------------------------------------------
+# This is the boundary between Analysis (F) and Build.
 
 CONFIG_FILE="build/forge.env"
 
@@ -369,12 +315,10 @@ FORGE_BUILD_FILE="$BUILD_FILE"
 FORGE_SCHEME="$BEST_SCHEME"
 FORGE_CONFIGURATION="$CONFIGURATION"
 FORGE_CLEAN_BUILD="$CLEAN_BUILD"
-
 FORGE_USE_SPM="$FORGE_USE_SPM"
 FORGE_USE_COCOAPODS="$FORGE_USE_COCOAPODS"
 FORGE_USE_CARTHAGE="$FORGE_USE_CARTHAGE"
 FORGE_USE_MISE="$FORGE_USE_MISE"
-
 FORGE_ENABLE_PREVIEWS="false"
 FORGE_CODE_SIGNING_ALLOWED="NO"
 FORGE_CODE_SIGNING_REQUIRED="NO"
@@ -382,9 +326,8 @@ EOF
 
 echo ""
 echo "======================================"
-echo "⚙️ iForge Configuration"
+echo "⚙️ iForge Analysis Result"
 echo "======================================"
-
 cat "$CONFIG_FILE"
 
 echo ""
