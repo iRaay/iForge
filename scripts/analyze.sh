@@ -80,11 +80,15 @@ echo "$LIST_OUTPUT"
 # --------------------------------------------------
 # 3. Extract Targets
 # --------------------------------------------------
+# xcodebuild -list indents section headers (for example "    Targets:").
+# Match optional leading/trailing whitespace so parsing is independent
+# of Xcode's formatting/indentation.
 
 TARGETS=$(echo "$LIST_OUTPUT" |
     awk '
-        /^Targets:/ {inside=1; next}
-        /^Schemes:/ {inside=0}
+        /^[[:space:]]*Targets:[[:space:]]*$/ {inside=1; next}
+        /^[[:space:]]*Build Configurations:[[:space:]]*$/ {inside=0}
+        /^[[:space:]]*Schemes:[[:space:]]*$/ {inside=0}
         inside && /^[[:space:]]+[^[:space:]]/ {
             gsub(/^[[:space:]]+/, "")
             print
@@ -97,7 +101,7 @@ TARGETS=$(echo "$LIST_OUTPUT" |
 
 SCHEMES=$(echo "$LIST_OUTPUT" |
     awk '
-        /^Schemes:/ {inside=1; next}
+        /^[[:space:]]*Schemes:[[:space:]]*$/ {inside=1; next}
         inside && /^[[:space:]]+[^[:space:]]/ {
             gsub(/^[[:space:]]+/, "")
             print
@@ -107,6 +111,9 @@ SCHEMES=$(echo "$LIST_OUTPUT" |
 if [ -z "$SCHEMES" ]; then
     echo ""
     echo "❌ No schemes found."
+    echo ""
+    echo "Debug: xcodebuild reported the following list:"
+    echo "$LIST_OUTPUT"
     exit 1
 fi
 
