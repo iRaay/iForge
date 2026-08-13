@@ -9,6 +9,8 @@ echo "======================================"
 echo "⚒ iForge — iOS Project Analyzer"
 echo "======================================"
 
+echo ""
+
 cd project
 mkdir -p build/logs
 
@@ -99,6 +101,11 @@ echo "$SCHEMES"
 # 4. Helpers
 # --------------------------------------------------
 
+# IMPORTANT:
+# Do NOT pass -sdk iphoneos here.
+# A/5 must inspect the project's native configuration rather than
+# forcing an iOS SDK and then incorrectly concluding that the scheme
+# supports iOS.
 xcode_settings() {
     local scheme="$1"
 
@@ -106,13 +113,11 @@ xcode_settings() {
         xcodebuild -workspace "$BUILD_FILE" \
             -scheme "$scheme" \
             -configuration "$CONFIGURATION" \
-            -sdk iphoneos \
             -showBuildSettings 2>&1
     else
         xcodebuild -project "$BUILD_FILE" \
             -scheme "$scheme" \
             -configuration "$CONFIGURATION" \
-            -sdk iphoneos \
             -showBuildSettings 2>&1
     fi
 }
@@ -125,8 +130,9 @@ setting_value() {
 # --------------------------------------------------
 # 5. Smart Scheme Selection
 # --------------------------------------------------
-# A/5 is a hard eligibility gate, not a score penalty:
-# a scheme that cannot build an iOS application is rejected.
+# A/5 is a hard eligibility gate, not a score penalty.
+# The scheme must naturally describe an iOS application before it
+# can receive any Smart Scheme score.
 
 BEST_SCHEME=""
 BEST_SCORE=-999999
@@ -152,7 +158,7 @@ while IFS= read -r SCHEME; do
     fi
 
     if [ "$SETTINGS_STATUS" -ne 0 ]; then
-        echo "❌ Rejected: xcodebuild -showBuildSettings failed for iOS SDK."
+        echo "❌ Rejected: xcodebuild -showBuildSettings failed."
         echo "$SETTINGS_OUTPUT" | tail -n 20
         continue
     fi
@@ -165,34 +171,35 @@ while IFS= read -r SCHEME; do
     PRODUCT_NAME=$(echo "$SETTINGS_OUTPUT" | setting_value "PRODUCT_NAME")
     SUPPORTS_MACCATALYST=$(echo "$SETTINGS_OUTPUT" | setting_value "SUPPORTS_MACCATALYST")
 
-    echo "SDKROOT: $SDKROOT"
-    echo "PLATFORM_NAME: $PLATFORM_NAME"
-    echo "SUPPORTED_PLATFORMS: $SUPPORTED_PLATFORMS"
-    echo "PRODUCT_TYPE: $PRODUCT_TYPE"
-    echo "TARGET_NAME: $TARGET_NAME"
+    echo "SDKROOT: ${SDKROOT:-<unset>}"
+    echo "PLATFORM_NAME: ${PLATFORM_NAME:-<unset>}"
+    echo "SUPPORTED_PLATFORMS: ${SUPPORTED_PLATFORMS:-<unset>}"
+    echo "PRODUCT_TYPE: ${PRODUCT_TYPE:-<unset>}"
+    echo "TARGET_NAME: ${TARGET_NAME:-<unset>}"
 
     # --------------------------------------------------
     # A/5 — iOS eligibility gate
     # --------------------------------------------------
+    # These checks inspect the project's native settings. We do not
+    # override SDKROOT during analysis because doing so can make a
+    # macOS target look like an iOS target.
 
     if ! echo "$SUPPORTED_PLATFORMS" | grep -Eq '(^|[[:space:]])iphoneos([[:space:]]|$)'; then
-        echo "❌ Rejected: scheme does not support iphoneos."
+        echo "❌ Rejected: scheme does not natively support iphoneos."
         continue
     fi
 
-    # Xcode reports versioned SDK roots such as "iphoneos26.5".
-    # Accept the version suffix while still rejecting macOS SDKs.
+    # Xcode may report versioned SDK roots such as iphoneos26.5.
     if ! echo "$SDKROOT" | grep -Eq '^iphoneos([0-9]+([.][0-9]+)*)?$'; then
-        echo "❌ Rejected: SDKROOT is not an iOS SDK: $SDKROOT"
+        echo "❌ Rejected: SDKROOT is not an iOS SDK: ${SDKROOT:-<unset>}"
         continue
     fi
 
     if [ "$PLATFORM_NAME" != "iphoneos" ]; then
-        echo "❌ Rejected: PLATFORM_NAME is not iphoneos."
+        echo "❌ Rejected: PLATFORM_NAME is not iphoneos: ${PLATFORM_NAME:-<unset>}"
         continue
     fi
 
-    # We are building an IPA, so the selected product must be an application.
     if [ "$PRODUCT_TYPE" != "com.apple.product-type.application" ]; then
         echo "❌ Rejected: product is not an iOS application."
         continue
