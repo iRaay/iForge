@@ -1,0 +1,91 @@
+name: Apply v0.2 Enhancements
+on:
+  workflow_dispatch:
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout future branch
+        uses: actions/checkout@v4
+        with:
+          ref: future
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create directories
+        run: |
+          mkdir -p scripts
+          mkdir -p .github/workflows
+          mkdir -p tests/bats
+          mkdir -p tests/fixtures/SimpleApp/SimpleApp.xcodeproj
+          mkdir -p tests/fixtures/WorkspaceApp/WorkspaceApp.xcodeproj
+          mkdir -p tests/fixtures/WorkspaceApp/WorkspaceApp.xcworkspace
+          mkdir -p tests/fixtures/CocoaPodsApp/CocoaPodsApp.xcodeproj
+          mkdir -p tests/fixtures/SPMApp/SPMApp.xcodeproj
+          mkdir -p tests/fixtures/MultiSchemeApp/MultiSchemeApp.xcodeproj
+          mkdir -p docs
+
+      - name: Write scripts/analyze.sh
+        run: echo "{analyze_b64}" | base64 -d > scripts/analyze.sh
+
+      - name: Write scripts/build.sh
+        run: echo "{build_b64}" | base64 -d > scripts/build.sh
+
+      - name: Write scripts/export.sh
+        run: echo "{export_b64}" | base64 -d > scripts/export.sh
+
+      - name: Write scripts/report.sh
+        run: echo "{report_b64}" | base64 -d > scripts/report.sh
+
+      - name: Write .github/workflows/lint.yml
+        run: echo "{lint_b64}" | base64 -d > .github/workflows/lint.yml
+
+      - name: Write .github/workflows/test-iforge.yml
+        run: echo "{test_b64}" | base64 -d > .github/workflows/test-iforge.yml
+
+      - name: Write .github/workflows/build.yml
+        run: echo "{build_yml_b64}" | base64 -d > .github/workflows/build.yml
+
+      - name: Write .github/copilot-instructions.md
+        run: echo "{copilot_b64}" | base64 -d > .github/copilot-instructions.md
+
+      - name: Write tests/bats/helper.bash
+        run: echo "{helper_b64}" | base64 -d > tests/bats/helper.bash
+
+      - name: Write tests/bats/analyze.bats
+        run: echo "{analyze_bats_b64}" | base64 -d > tests/bats/analyze.bats
+
+      - name: Write tests/bats/build.bats
+        run: echo "{build_bats_b64}" | base64 -d > tests/bats/build.bats
+
+      - name: Write tests/run-tests.sh
+        run: echo "{run_tests_b64}" | base64 -d > tests/run-tests.sh
+
+      - name: Write docs/testing.md
+        run: echo "{testing_md_b64}" | base64 -d > docs/testing.md
+
+      - name: Write fixture files
+        run: |
+          echo "{simple_b64}" | base64 -d > tests/fixtures/SimpleApp/SimpleApp.xcodeproj/project.pbxproj
+          echo "{simple_b64}" | base64 -d > tests/fixtures/WorkspaceApp/WorkspaceApp.xcodeproj/project.pbxproj
+          echo "{simple_b64}" | base64 -d > tests/fixtures/CocoaPodsApp/CocoaPodsApp.xcodeproj/project.pbxproj
+          echo "{simple_b64}" | base64 -d > tests/fixtures/SPMApp/SPMApp.xcodeproj/project.pbxproj
+          echo "{simple_b64}" | base64 -d > tests/fixtures/MultiSchemeApp/MultiSchemeApp.xcodeproj/project.pbxproj
+          echo '<?xml version="1.0" encoding="UTF-8"?><Workspace></Workspace>' > tests/fixtures/WorkspaceApp/WorkspaceApp.xcworkspace/contents.xcworkspacedata
+          echo "platform :ios, '15.0'" > tests/fixtures/CocoaPodsApp/Podfile
+          echo '// swift-tools-version:5.7' > tests/fixtures/SPMApp/Package.swift
+
+      - name: Set executable permissions
+        run: |
+          chmod +x scripts/*.sh
+          chmod +x tests/run-tests.sh
+
+      - name: Commit and push
+        run: |
+          git config user.name "GitHub Action"
+          git config user.email "action@github.com"
+          git add -A
+          git diff --cached --quiet || git commit -m "feat(v0.2): smart scheme selection, testing infra, shellcheck, build reports"
+          git push origin future
