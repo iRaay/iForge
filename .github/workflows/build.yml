@@ -7,64 +7,161 @@ on:
         description: "GitHub repository (owner/repo)"
         required: true
         type: string
+
       branch:
         description: "Branch to build"
         required: true
         default: "main"
         type: string
 
+      configuration:
+        description: "Xcode build configuration"
+        required: true
+        default: "Release"
+        type: choice
+        options:
+          - Release
+          - Debug
+
+      clean_build:
+        description: "Clean DerivedData and previous build artifacts"
+        required: true
+        default: false
+        type: boolean
+
 jobs:
   build:
+
     runs-on: macos-latest
 
     steps:
+
+      # ----------------------------------------------
+      # Checkout iForge
+      # ----------------------------------------------
+
       - name: Checkout iForge
         uses: actions/checkout@v4
 
+      # ----------------------------------------------
+      # Clone Target Repository
+      # ----------------------------------------------
+
       - name: Clone Repository
         env:
-          REPOSITORY: ${{ github.event.inputs.repository }}
-          BRANCH: ${{ github.event.inputs.branch }}
+          REPOSITORY: ${{ inputs.repository }}
+          BRANCH: ${{ inputs.branch }}
+
         run: |
-          git clone --branch "$BRANCH" "https://github.com/$REPOSITORY.git" project
+          git clone \
+            --branch "$BRANCH" \
+            --depth 1 \
+            "https://github.com/$REPOSITORY.git" \
+            project
+
+      # ----------------------------------------------
+      # Analyze
+      # ----------------------------------------------
 
       - name: Analyze Project
+        env:
+          CONFIGURATION: ${{ inputs.configuration }}
+          CLEAN_BUILD: ${{ inputs.clean_build }}
+
         run: |
           chmod +x scripts/analyze.sh
           ./scripts/analyze.sh
+
+      # ----------------------------------------------
+      # Prepare
+      # ----------------------------------------------
 
       - name: Prepare Environment
         run: |
           chmod +x scripts/prepare.sh
           ./scripts/prepare.sh
 
+      # ----------------------------------------------
+      # Build
+      # ----------------------------------------------
+
       - name: Build iOS Scheme
         run: |
           chmod +x scripts/build.sh
           ./scripts/build.sh
+
+      # ----------------------------------------------
+      # Export IPA
+      # ----------------------------------------------
 
       - name: Export IPA
         run: |
           chmod +x scripts/export.sh
           ./scripts/export.sh
 
+      # ----------------------------------------------
+      # Detect IPA
+      # ----------------------------------------------
+
       - name: Detect IPA
         id: ipa
+
         run: |
-          IPA_PATH=$(find project/build/export -maxdepth 1 -type f -name "*.ipa" -print -quit)
+
+          IPA_PATH=$(find \
+            project/build/export \
+            -maxdepth 1 \
+            -type f \
+            -name "*.ipa" \
+            -print \
+            -quit)
+
           if [ -z "$IPA_PATH" ]; then
             echo "❌ No IPA was generated."
             exit 1
           fi
+
           IPA_NAME=$(basename "$IPA_PATH")
+
           echo "path=$IPA_PATH" >> "$GITHUB_OUTPUT"
           echo "name=$IPA_NAME" >> "$GITHUB_OUTPUT"
-          echo "IPA: $IPA_NAME"
+
+          echo ""
+          echo "IPA:"
+          echo "$IPA_NAME"
+
+      # ----------------------------------------------
+      # Upload IPA
+      # ----------------------------------------------
 
       - name: Upload IPA Artifact
         uses: actions/upload-artifact@v4
+
         with:
           name: ${{ steps.ipa.outputs.name }}
+
           path: ${{ steps.ipa.outputs.path }}
+
           if-no-files-found: error
+
+          retention-days: 14
+
+      # ----------------------------------------------
+      # Upload Build Log
+      # ----------------------------------------------
+
+      - name: Upload Build Logs
+        if: always()
+
+        uses: actions/upload-artifact@v4
+
+        with:
+          name: iForge-build-logs
+
+          path: |
+            project/build/logs/
+            project/build/forge.env
+
+          if-no-files-found: warn
+
           retention-days: 14
