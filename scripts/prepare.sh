@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -euo pipefail
 
 echo "=============================="
 echo "🛠 Preparing Environment"
@@ -20,23 +20,26 @@ echo "🍎 Swift version:"
 swift --version
 
 # --------------------------------------------------
-# 1. Load Forge Configuration
+# 1. Load iForge Configuration
 # --------------------------------------------------
 
 CONFIG_FILE="build/forge.env"
 
 if [ ! -f "$CONFIG_FILE" ]; then
+
     echo ""
-    echo "❌ Forge configuration not found:"
+    echo "❌ iForge configuration not found:"
     echo "$CONFIG_FILE"
+
     exit 1
+
 fi
 
 source "$CONFIG_FILE"
 
 echo ""
 echo "======================================"
-echo "⚙️ Forge Configuration"
+echo "⚙️ iForge Configuration"
 echo "======================================"
 
 echo "Build Type:"
@@ -47,6 +50,12 @@ echo "$FORGE_BUILD_FILE"
 
 echo "Scheme:"
 echo "$FORGE_SCHEME"
+
+echo "Configuration:"
+echo "${FORGE_CONFIGURATION:-Release}"
+
+echo "Clean Build:"
+echo "${FORGE_CLEAN_BUILD:-false}"
 
 echo ""
 echo "Swift Package Manager:"
@@ -128,8 +137,9 @@ if [ "$FORGE_USE_SPM" = "true" ]; then
     else
 
         echo ""
-        echo "❌ Unknown Forge build type:"
+        echo "❌ Unknown iForge build type:"
         echo "$FORGE_BUILD_TYPE"
+
         exit 1
 
     fi
@@ -154,10 +164,15 @@ if [ "$FORGE_USE_COCOAPODS" = "true" ]; then
     echo "======================================"
 
     if ! command -v pod >/dev/null 2>&1; then
+
         echo "📦 Installing CocoaPods..."
+
         brew install cocoapods
+
     else
+
         echo "✅ CocoaPods already installed"
+
     fi
 
     echo ""
@@ -165,39 +180,67 @@ if [ "$FORGE_USE_COCOAPODS" = "true" ]; then
     pod --version
 
     if [ ! -f "Podfile" ]; then
+
         echo "❌ CocoaPods was detected, but Podfile is missing."
+
         exit 1
+
     fi
 
     echo ""
     echo "🔄 Installing CocoaPods dependencies..."
+
     pod install
 
-    PROJECT_NAME="$(basename "$FORGE_BUILD_FILE" .xcodeproj)"
+    PROJECT_NAME=""
+
+    if [ -n "${FORGE_BUILD_FILE:-}" ]; then
+
+        case "$FORGE_BUILD_FILE" in
+
+            *.xcodeproj)
+                PROJECT_NAME="$(basename "$FORGE_BUILD_FILE" .xcodeproj)"
+                ;;
+
+            *.xcworkspace)
+                PROJECT_NAME="$(basename "$FORGE_BUILD_FILE" .xcworkspace)"
+                ;;
+
+        esac
+
+    fi
+
+    if [ -z "$PROJECT_NAME" ]; then
+
+        PROJECT_NAME="$(find . \
+            -maxdepth 1 \
+            -type d \
+            -name "*.xcodeproj" \
+            -print \
+            | head -n 1 \
+            | xargs -I{} basename "{}" .xcodeproj)"
+
+    fi
+
     GENERATED_WORKSPACE="./${PROJECT_NAME}.xcworkspace"
 
     if [ -d "$GENERATED_WORKSPACE" ]; then
+
         FORGE_BUILD_TYPE="workspace"
         FORGE_BUILD_FILE="$GENERATED_WORKSPACE"
 
         echo ""
         echo "✅ CocoaPods workspace detected:"
         echo "$FORGE_BUILD_FILE"
+
     else
+
+        echo ""
         echo "❌ pod install completed, but no .xcworkspace was found."
+
         exit 1
+
     fi
-
-    cat > "$CONFIG_FILE" <<EOF
-FORGE_BUILD_TYPE="$FORGE_BUILD_TYPE"
-FORGE_BUILD_FILE="$FORGE_BUILD_FILE"
-FORGE_SCHEME="$FORGE_SCHEME"
-
-FORGE_USE_SPM="$FORGE_USE_SPM"
-FORGE_USE_COCOAPODS="$FORGE_USE_COCOAPODS"
-FORGE_USE_CARTHAGE="$FORGE_USE_CARTHAGE"
-FORGE_USE_MISE="$FORGE_USE_MISE"
-EOF
 
 else
 
@@ -218,13 +261,10 @@ if [ "$FORGE_USE_CARTHAGE" = "true" ]; then
     echo "🛒 Carthage Required"
     echo "======================================"
 
-    # ----------------------------------------------
-    # 5.1 Install Carthage if required
-    # ----------------------------------------------
-
     if command -v carthage >/dev/null 2>&1; then
 
         echo "✅ Carthage already installed"
+
         carthage version
 
     else
@@ -235,29 +275,24 @@ if [ "$FORGE_USE_CARTHAGE" = "true" ]; then
 
         echo ""
         echo "✅ Carthage installed"
+
         carthage version
 
     fi
-
-    # ----------------------------------------------
-    # 5.2 Validate Cartfile
-    # ----------------------------------------------
 
     if [ ! -f "Cartfile" ]; then
 
         echo ""
         echo "❌ Carthage was detected, but Cartfile is missing."
+
         exit 1
 
     fi
 
     echo ""
     echo "📄 Cartfile detected:"
-    cat Cartfile
 
-    # ----------------------------------------------
-    # 5.3 Resolve and build Carthage dependencies
-    # ----------------------------------------------
+    cat Cartfile
 
     echo ""
     echo "🔄 Resolving Carthage dependencies..."
@@ -266,14 +301,11 @@ if [ "$FORGE_USE_CARTHAGE" = "true" ]; then
         --platform iOS \
         --use-xcframeworks
 
-    # ----------------------------------------------
-    # 5.4 Validate Carthage output
-    # ----------------------------------------------
-
     if [ ! -d "Carthage/Build" ]; then
 
         echo ""
         echo "❌ Carthage completed, but Carthage/Build was not created."
+
         exit 1
 
     fi
@@ -283,7 +315,12 @@ if [ "$FORGE_USE_CARTHAGE" = "true" ]; then
 
     echo ""
     echo "📦 Carthage build output:"
-    find Carthage/Build -maxdepth 2 -type d -name "*.xcframework" -print
+
+    find Carthage/Build \
+        -maxdepth 2 \
+        -type d \
+        -name "*.xcframework" \
+        -print
 
 else
 
@@ -294,7 +331,38 @@ else
 fi
 
 # --------------------------------------------------
-# 6. Finish
+# 6. Preserve / Update forge.env
+# --------------------------------------------------
+
+echo ""
+echo "======================================"
+echo "💾 Updating iForge Configuration"
+echo "======================================"
+
+cat > "$CONFIG_FILE" <<EOF
+FORGE_BUILD_TYPE="$FORGE_BUILD_TYPE"
+FORGE_BUILD_FILE="$FORGE_BUILD_FILE"
+FORGE_SCHEME="$FORGE_SCHEME"
+FORGE_CONFIGURATION="${FORGE_CONFIGURATION:-Release}"
+FORGE_CLEAN_BUILD="${FORGE_CLEAN_BUILD:-false}"
+
+FORGE_USE_SPM="$FORGE_USE_SPM"
+FORGE_USE_COCOAPODS="$FORGE_USE_COCOAPODS"
+FORGE_USE_CARTHAGE="$FORGE_USE_CARTHAGE"
+FORGE_USE_MISE="$FORGE_USE_MISE"
+
+FORGE_ENABLE_PREVIEWS="${FORGE_ENABLE_PREVIEWS:-false}"
+FORGE_CODE_SIGNING_ALLOWED="${FORGE_CODE_SIGNING_ALLOWED:-NO}"
+FORGE_CODE_SIGNING_REQUIRED="${FORGE_CODE_SIGNING_REQUIRED:-NO}"
+EOF
+
+echo ""
+echo "Updated configuration:"
+
+cat "$CONFIG_FILE"
+
+# --------------------------------------------------
+# 7. Finish
 # --------------------------------------------------
 
 echo ""
