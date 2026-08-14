@@ -1,10 +1,6 @@
 #!/bin/bash
 set -euo pipefail
 
-# iForge — iOS Project Analyzer
-# A: Smart Scheme Selection
-# F: Analysis produces the build configuration consumed by build.sh
-
 echo "======================================"
 echo "⚒ iForge — iOS Project Analyzer"
 echo "======================================"
@@ -79,7 +75,6 @@ SCHEMES=$(echo "$LIST_OUTPUT" | awk '
 if [ -z "$SCHEMES" ]; then
     echo ""
     echo "❌ No schemes found."
-    echo ""
     echo "$LIST_OUTPUT"
     exit 1
 fi
@@ -100,11 +95,9 @@ echo "$SCHEMES"
 # 4. Helpers
 # --------------------------------------------------
 
-# IMPORTANT:
-# Do NOT pass -sdk iphoneos here.
-# A/5 must inspect the project's native configuration rather than
-# forcing an iOS SDK and then incorrectly concluding that the scheme
-# supports iOS.
+# A/5: Ask Xcode for the scheme's iOS build settings and generic iOS
+# destination. This is not a blind SDK override: eligibility still
+# requires native iphoneos support and an Application product type.
 xcode_settings() {
     local scheme="$1"
 
@@ -112,11 +105,15 @@ xcode_settings() {
         xcodebuild -workspace "$BUILD_FILE" \
             -scheme "$scheme" \
             -configuration "$CONFIGURATION" \
+            -sdk iphoneos \
+            -destination "generic/platform=iOS" \
             -showBuildSettings 2>&1
     else
         xcodebuild -project "$BUILD_FILE" \
             -scheme "$scheme" \
             -configuration "$CONFIGURATION" \
+            -sdk iphoneos \
+            -destination "generic/platform=iOS" \
             -showBuildSettings 2>&1
     fi
 }
@@ -129,9 +126,6 @@ setting_value() {
 # --------------------------------------------------
 # 5. Smart Scheme Selection
 # --------------------------------------------------
-# A/5 is a hard eligibility gate, not a score penalty.
-# The scheme must naturally describe an iOS application before it
-# can receive any Smart Scheme score.
 
 BEST_SCHEME=""
 BEST_SCORE=-999999
@@ -147,18 +141,9 @@ while IFS= read -r SCHEME; do
 
     LOWER=$(echo "$SCHEME" | tr '[:upper:]' '[:lower:]')
 
-    SETTINGS_OUTPUT=""
-    SETTINGS_STATUS=0
-
-    if SETTINGS_OUTPUT=$(xcode_settings "$SCHEME"); then
-        SETTINGS_STATUS=0
-    else
-        SETTINGS_STATUS=$?
-    fi
-
-    if [ "$SETTINGS_STATUS" -ne 0 ]; then
-        echo "❌ Rejected: xcodebuild -showBuildSettings failed."
-        echo "$SETTINGS_OUTPUT" | tail -n 20
+    if ! SETTINGS_OUTPUT=$(xcode_settings "$SCHEME"); then
+        echo "❌ Rejected: scheme cannot resolve a generic iOS destination."
+        echo "$SETTINGS_OUTPUT" | tail -n 30
         continue
     fi
 
@@ -179,31 +164,25 @@ while IFS= read -r SCHEME; do
     # --------------------------------------------------
     # A/5 — iOS eligibility gate
     # --------------------------------------------------
-    # These checks inspect the project's native settings. We do not
-    # override SDKROOT during analysis because doing so can make a
-    # macOS target look like an iOS target.
 
     if ! echo "$SUPPORTED_PLATFORMS" | grep -Eq '(^|[[:space:]])iphoneos([[:space:]]|$)'; then
-        echo "❌ Rejected: scheme does not natively support iphoneos."
-        continue
-    fi
-
-    # Xcode may report SDKROOT as a full path, e.g.:
-    # /Applications/Xcode_26.6.app/.../iPhoneOS26.5.sdk
-    # Validate the actual SDK path/name rather than expecting only
-    # the logical value "iphoneos".
-    SDKROOT_BASENAME=$(basename "$SDKROOT")
-    if ! echo "$SDKROOT" | grep -Eq '/iPhoneOS\.platform/'; then
-        echo "❌ Rejected: SDKROOT is not an iPhoneOS platform path: ${SDKROOT:-<unset>}"
-        continue
-    fi
-    if ! echo "$SDKROOT_BASENAME" | grep -Eq '^iPhoneOS[0-9]+([.][0-9]+)*\.sdk$'; then
-        echo "❌ Rejected: SDKROOT does not name a versioned iOS SDK: ${SDKROOT:-<unset>}"
+        echo "❌ Rejected: scheme does not support iphoneos."
         continue
     fi
 
     if [ "$PLATFORM_NAME" != "iphoneos" ]; then
         echo "❌ Rejected: PLATFORM_NAME is not iphoneos: ${PLATFORM_NAME:-<unset>}"
+        continue
+    fi
+
+    SDKROOT_BASENAME=$(basename "$SDKROOT")
+    if ! echo "$SDKROOT" | grep -Eq '/iPhoneOS\.platform/'; then
+        echo "❌ Rejected: SDKROOT is not an iPhoneOS SDK path: ${SDKROOT:-<unset>}"
+        continue
+    fi
+
+    if ! echo "$SDKROOT_BASENAME" | grep -Eq '^iPhoneOS[0-9]+([.][0-9]+)*\.sdk$'; then
+        echo "❌ Rejected: SDKROOT does not name a versioned iOS SDK: ${SDKROOT:-<unset>}"
         continue
     fi
 
@@ -233,17 +212,20 @@ while IFS= read -r SCHEME; do
     SCORE=100
     REASONS="ios-compatible;application;"
 
-    if [ "$SCHEME" = "$TARGET_NAME" ] || echo "$TARGETS" | grep -Fxq "$SCHEME"; then
+    if [ -n "$TARGET_NAME" ] && [ "$SCHEME" = "$TARGET_NAME" ]; then
+        SCORE=$((SCORE + 100))
+        REASONS="$REASONS exact-target-match;"
+    elif echo "$TARGETS" | grep -Fxq "$SCHEME"; then
         SCORE=$((SCORE + 100))
         REASONS="$REASONS exact-target-match;"
     fi
 
-    if [ -n "$TARGET_NAME" ] && [ "$SCHEME" = "$PRODUCT_NAME" ]; then
+    if [ -n "$PRODUCT_NAME" ] && [ "$SCHEME" = "$PRODUCT_NAME" ]; then
         SCORE=$((SCORE + 30))
         REASONS="$REASONS product-name-match;"
     fi
 
-    if echo "$LOWER" | grep -Eq 'app$|app[-_ ]'; then
+    if echo "$LOWER" | grep -Eq '(^|[-_ .])app($|[-_ .])|app$'; then
         SCORE=$((SCORE + 25))
         REASONS="$REASONS app-name;"
     fi
@@ -274,10 +256,6 @@ if [ -z "$BEST_SCHEME" ]; then
     exit 1
 fi
 
-# --------------------------------------------------
-# 6. Final Selection
-# --------------------------------------------------
-
 echo ""
 echo "======================================"
 echo "🏆 Selected Scheme"
@@ -287,7 +265,7 @@ echo "Score: $BEST_SCORE"
 echo "Reason: $BEST_REASON"
 
 # --------------------------------------------------
-# 7. Dependency Detection
+# 6. Dependency Detection
 # --------------------------------------------------
 
 FORGE_USE_SPM="false"
@@ -319,9 +297,8 @@ if find . -type f \( -name ".mise.toml" -o -name "mise.toml" -o -name ".mise.loc
 fi
 
 # --------------------------------------------------
-# 8. Persist Analysis Result
+# 7. Persist Analysis Result
 # --------------------------------------------------
-# This is the boundary between Analysis (F) and Build.
 
 CONFIG_FILE="build/forge.env"
 
