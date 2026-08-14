@@ -8,7 +8,6 @@ set -euo pipefail
 echo "======================================"
 echo "⚒ iForge — iOS Project Analyzer"
 echo "======================================"
-
 echo ""
 
 cd project
@@ -189,9 +188,17 @@ while IFS= read -r SCHEME; do
         continue
     fi
 
-    # Xcode may report versioned SDK roots such as iphoneos26.5.
-    if ! echo "$SDKROOT" | grep -Eq '^iphoneos([0-9]+([.][0-9]+)*)?$'; then
-        echo "❌ Rejected: SDKROOT is not an iOS SDK: ${SDKROOT:-<unset>}"
+    # Xcode may report SDKROOT as a full path, e.g.:
+    # /Applications/Xcode_26.6.app/.../iPhoneOS26.5.sdk
+    # Validate the actual SDK path/name rather than expecting only
+    # the logical value "iphoneos".
+    SDKROOT_BASENAME=$(basename "$SDKROOT")
+    if ! echo "$SDKROOT" | grep -Eq '/iPhoneOS\.platform/'; then
+        echo "❌ Rejected: SDKROOT is not an iPhoneOS platform path: ${SDKROOT:-<unset>}"
+        continue
+    fi
+    if ! echo "$SDKROOT_BASENAME" | grep -Eq '^iPhoneOS[0-9]+([.][0-9]+)*\.sdk$'; then
+        echo "❌ Rejected: SDKROOT does not name a versioned iOS SDK: ${SDKROOT:-<unset>}"
         continue
     fi
 
