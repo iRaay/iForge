@@ -61,12 +61,9 @@ rm -rf "$STAGING_PATH"
 mkdir -p "$STAGING_PATH/Payload" "$EXPORT_PATH"
 cp -R "$APP_PATH" "$STAGING_PATH/Payload/"
 
-# Create the IPA from the staging directory without changing the shell's
-# working directory. This prevents relative-path bugs during validation.
+# Create the IPA from the staging directory using the absolute output path.
+# This prevents relative-path bugs during validation.
 rm -f "$IPA_PATH"
-/usr/bin/zip -qry "$IPA_PATH" -j /dev/null 2>/dev/null || true
-rm -f "$IPA_PATH"
-
 cd "$STAGING_PATH"
 /usr/bin/zip -qry "$IPA_PATH" Payload
 cd "$PROJECT_ROOT"
@@ -89,7 +86,7 @@ if ! /usr/bin/unzip -tq "$IPA_PATH" >/dev/null; then
     exit 1
 fi
 
-if ! /usr/bin/unzip -l "$IPA_PATH" | grep -q '^.*Payload/[^/]*\.app/'; then
+if ! /usr/bin/unzip -l "$IPA_PATH" | grep -q 'Payload/[^/]\+\.app/'; then
     echo "❌ IPA does not contain an application bundle under Payload/."
     exit 1
 fi
