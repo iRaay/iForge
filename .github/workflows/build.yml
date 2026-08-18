@@ -53,11 +53,21 @@ jobs:
           BRANCH: ${{ inputs.branch }}
 
         run: |
-          git clone \
+          git -c protocol.file.allow=never \
+            clone \
             --branch "$BRANCH" \
             --depth 1 \
             "https://github.com/$REPOSITORY.git" \
             project
+
+      # ----------------------------------------------
+      # Prepare Source
+      # ----------------------------------------------
+
+      - name: Prepare Source
+        run: |
+          chmod +x scripts/prepare_sources.sh
+          ./scripts/prepare_sources.sh
 
       # ----------------------------------------------
       # Analyze
