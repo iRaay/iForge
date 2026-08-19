@@ -11,6 +11,15 @@ mkdir -p build/logs
 
 CONFIGURATION="${CONFIGURATION:-Release}"
 CLEAN_BUILD="${CLEAN_BUILD:-false}"
+FORGE_ALLOW_PACKAGE_PLUGINS="${FORGE_ALLOW_PACKAGE_PLUGINS:-false}"
+
+case "$FORGE_ALLOW_PACKAGE_PLUGINS" in
+    true|false) ;;
+    *)
+        echo "❌ FORGE_ALLOW_PACKAGE_PLUGINS must be true or false."
+        exit 1
+        ;;
+esac
 
 WORKSPACE=$(find . -type d -name "*.xcworkspace" -not -path "./.git/*" -not -path "./build/*" -print | sort | head -n 1)
 PROJECT=$(find . -type d -name "*.xcodeproj" -not -path "./.git/*" -not -path "./build/*" -print | sort | head -n 1)
@@ -32,6 +41,16 @@ echo "🔍 Project Detection"
 echo "======================================"
 echo "Build Type: $BUILD_TYPE"
 echo "Build File: $BUILD_FILE"
+
+echo ""
+echo "======================================"
+echo "🔐 Swift Package Plugin Policy"
+echo "======================================"
+if [ "$FORGE_ALLOW_PACKAGE_PLUGINS" = "true" ]; then
+    echo "⚠️ Package plugin validation bypass is explicitly ENABLED for this build."
+else
+    echo "🔒 Package plugin validation bypass is DISABLED (secure default)."
+fi
 
 if [ "$BUILD_TYPE" = "workspace" ]; then
     LIST_OUTPUT=$(xcodebuild -list -workspace "$BUILD_FILE" 2>&1)
@@ -245,6 +264,7 @@ FORGE_USE_SPM="$FORGE_USE_SPM"
 FORGE_USE_COCOAPODS="$FORGE_USE_COCOAPODS"
 FORGE_USE_CARTHAGE="$FORGE_USE_CARTHAGE"
 FORGE_USE_MISE="$FORGE_USE_MISE"
+FORGE_ALLOW_PACKAGE_PLUGINS="$FORGE_ALLOW_PACKAGE_PLUGINS"
 FORGE_ENABLE_PREVIEWS="false"
 FORGE_CODE_SIGNING_ALLOWED="NO"
 FORGE_CODE_SIGNING_REQUIRED="NO"
@@ -258,4 +278,3 @@ cat "$CONFIG_FILE"
 echo ""
 echo "======================================"
 echo "✅ Analysis Complete"
-echo "======================================"
