@@ -39,6 +39,7 @@ print_build_error() {
     echo "Scheme: $FORGE_SCHEME"
     echo "Configuration: ${FORGE_CONFIGURATION:-Release}"
     echo "Clean Build: ${FORGE_CLEAN_BUILD:-false}"
+    echo "Package Plugin Validation Bypass: ${FORGE_ALLOW_PACKAGE_PLUGINS:-false}"
 
     if [ -f "$LOG_FILE" ]; then
 
@@ -76,6 +77,15 @@ trap print_build_error ERR
 
 FORGE_CONFIGURATION="${FORGE_CONFIGURATION:-Release}"
 FORGE_CLEAN_BUILD="${FORGE_CLEAN_BUILD:-false}"
+FORGE_ALLOW_PACKAGE_PLUGINS="${FORGE_ALLOW_PACKAGE_PLUGINS:-false}"
+
+case "$FORGE_ALLOW_PACKAGE_PLUGINS" in
+    true|false) ;;
+    *)
+        echo "❌ FORGE_ALLOW_PACKAGE_PLUGINS must be true or false."
+        exit 1
+        ;;
+esac
 
 if [ -z "${FORGE_BUILD_TYPE:-}" ]; then
     echo "❌ FORGE_BUILD_TYPE is missing."
@@ -99,25 +109,23 @@ echo ""
 echo "======================================"
 echo "📋 iForge Configuration"
 echo "======================================"
-
 echo "Build Type:"
 echo "$FORGE_BUILD_TYPE"
-
 echo ""
 echo "Build File:"
 echo "$FORGE_BUILD_FILE"
-
 echo ""
 echo "Scheme:"
 echo "$FORGE_SCHEME"
-
 echo ""
 echo "Configuration:"
 echo "$FORGE_CONFIGURATION"
-
 echo ""
 echo "Clean Build:"
 echo "$FORGE_CLEAN_BUILD"
+echo ""
+echo "Package Plugin Validation Bypass:"
+echo "$FORGE_ALLOW_PACKAGE_PLUGINS"
 
 # --------------------------------------------------
 # Clean Build
@@ -168,6 +176,28 @@ else
 fi
 
 # --------------------------------------------------
+# Package Plugin Policy
+# --------------------------------------------------
+
+XCODE_PACKAGE_PLUGIN_ARGUMENTS=()
+
+if [ "$FORGE_ALLOW_PACKAGE_PLUGINS" = "true" ]; then
+    echo ""
+    echo "======================================"
+    echo "⚠️ Swift Package Plugin Policy"
+    echo "======================================"
+    echo "Explicit opt-in detected."
+    echo "Using: -skipPackagePluginValidation"
+    XCODE_PACKAGE_PLUGIN_ARGUMENTS=(-skipPackagePluginValidation)
+else
+    echo ""
+    echo "======================================"
+    echo "🔒 Swift Package Plugin Policy"
+    echo "======================================"
+    echo "Secure default: package plugin validation remains enabled."
+fi
+
+# --------------------------------------------------
 # Build
 # --------------------------------------------------
 
@@ -190,6 +220,7 @@ xcodebuild \
     -destination "generic/platform=iOS" \
     -derivedDataPath "$DERIVED_DATA_PATH" \
     -archivePath "$ARCHIVE_PATH" \
+    "${XCODE_PACKAGE_PLUGIN_ARGUMENTS[@]}" \
     ENABLE_PREVIEWS=NO \
     CODE_SIGNING_ALLOWED=NO \
     CODE_SIGNING_REQUIRED=NO \
@@ -210,11 +241,9 @@ echo ""
 echo "======================================"
 echo "✅ iForge Archive Finished"
 echo "======================================"
-
 echo ""
 echo "Archive:"
 echo "$ARCHIVE_PATH"
-
 echo ""
 echo "Build Log:"
 echo "$LOG_FILE"
