@@ -1,4 +1,4 @@
-name: iForge Build
+name: iForge Build iOS
 
 on:
   workflow_dispatch:
