@@ -11,6 +11,15 @@ mkdir -p build/logs
 
 CONFIGURATION="${CONFIGURATION:-Release}"
 CLEAN_BUILD="${CLEAN_BUILD:-false}"
+FORGE_ALLOW_PACKAGE_PLUGINS="${FORGE_ALLOW_PACKAGE_PLUGINS:-false}"
+
+case "$FORGE_ALLOW_PACKAGE_PLUGINS" in
+    true|false) ;;
+    *)
+        echo "❌ FORGE_ALLOW_PACKAGE_PLUGINS must be true or false."
+        exit 1
+        ;;
+esac
 
 WORKSPACE=$(find . -type d -name "*.xcworkspace" -not -path "./.git/*" -not -path "./build/*" -print | sort | head -n 1)
 PROJECT=$(find . -type d -name "*.xcodeproj" -not -path "./.git/*" -not -path "./build/*" -print | sort | head -n 1)
@@ -211,7 +220,7 @@ echo "Scheme: $BEST_SCHEME"
 echo "Score: $BEST_SCORE"
 echo "Reason: $BEST_REASON"
 
-FORGE_USE_SPM="false"
+aFORGE_USE_SPM="false"
 FORGE_USE_COCOAPODS="false"
 FORGE_USE_CARTHAGE="false"
 FORGE_USE_MISE="false"
@@ -245,6 +254,7 @@ FORGE_USE_SPM="$FORGE_USE_SPM"
 FORGE_USE_COCOAPODS="$FORGE_USE_COCOAPODS"
 FORGE_USE_CARTHAGE="$FORGE_USE_CARTHAGE"
 FORGE_USE_MISE="$FORGE_USE_MISE"
+FORGE_ALLOW_PACKAGE_PLUGINS="$FORGE_ALLOW_PACKAGE_PLUGINS"
 FORGE_ENABLE_PREVIEWS="false"
 FORGE_CODE_SIGNING_ALLOWED="NO"
 FORGE_CODE_SIGNING_REQUIRED="NO"
