@@ -220,7 +220,7 @@ echo "Scheme: $BEST_SCHEME"
 echo "Score: $BEST_SCORE"
 echo "Reason: $BEST_REASON"
 
-aFORGE_USE_SPM="false"
+FORGE_USE_SPM="false"
 FORGE_USE_COCOAPODS="false"
 FORGE_USE_CARTHAGE="false"
 FORGE_USE_MISE="false"
