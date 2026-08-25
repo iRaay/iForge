@@ -29,9 +29,9 @@
 		A10000010000000000000119 /* DateExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000119 /* DateExtensions.swift */; };
 		A10000010000000000000120 /* BuildDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000120 /* BuildDetailView.swift */; };
 		A10000010000000000000121 /* IPADownloadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000121 /* IPADownloadView.swift */; };
-	A10000010000000000000115 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000115 /* OnboardingView.swift */; };
-	A10000010000000000000116 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000116 /* NotificationManager.swift */; };
-	A10000010000000000000117 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A80000010000000000000001 /* Localizable.strings */; };
+	AB0000010000000000000001 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0000010000000000000004 /* OnboardingView.swift */; };
+	AB0000010000000000000002 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0000010000000000000005 /* NotificationManager.swift */; };
+	AB0000010000000000000003 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = AB0000010000000000000006 /* Localizable.strings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -61,8 +61,8 @@
 		A20000010000000000000119 /* DateExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/Extensions/DateExtensions.swift; sourceTree = "<group>"; };
 		A20000010000000000000120 /* BuildDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Builds/BuildDetailView.swift; sourceTree = "<group>"; };
 		A20000010000000000000121 /* IPADownloadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/IPAFiles/IPADownloadView.swift; sourceTree = "<group>"; };
-	A20000010000000000000115 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Onboarding/OnboardingView.swift; sourceTree = "<group>"; };
-	A20000010000000000000116 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/Notifications/NotificationManager.swift; sourceTree = "<group>"; };
+	AB0000010000000000000004 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Onboarding/OnboardingView.swift; sourceTree = "<group>"; };
+	AB0000010000000000000005 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/Notifications/NotificationManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -76,7 +76,7 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		A80000010000000000000001 /* Localizable.strings */ = {
+		AB0000010000000000000006 /* Localizable.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
 				A20000010000000000000201 /* en */,
@@ -122,7 +122,7 @@
 				A20000010000000000000121 /* IPADownloadView.swift */,
 				A20000010000000000000010 /* Info.plist */,
 				A20000010000000000000030 /* Assets.xcassets */,
-				A80000010000000000000001 /* Localizable.strings */,
+				AB0000010000000000000006 /* Localizable.strings */,
 			);
 			path = "";
 			sourceTree = "<group>";
@@ -193,7 +193,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A10000010000000000000117 /* Localizable.strings in Resources */,
+				AB0000010000000000000003 /* Localizable.strings in Resources */,
 				A10000010000000000000004 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -205,8 +205,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A10000010000000000000116 /* NotificationManager.swift in Sources */,
-				A10000010000000000000115 /* OnboardingView.swift in Sources */,
+				AB0000010000000000000002 /* NotificationManager.swift in Sources */,
+				AB0000010000000000000001 /* OnboardingView.swift in Sources */,
 				A10000010000000000000117 /* WorkflowTemplate.swift in Sources */,
 				A10000010000000000000118 /* ArtifactExtractor.swift in Sources */,
 				A10000010000000000000119 /* DateExtensions.swift in Sources */,
