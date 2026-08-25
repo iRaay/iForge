@@ -1,6 +1,6 @@
 import Foundation
 
-struct GitHubRepository: Decodable, Identifiable, Hashable {
+struct GitHubRepository: Codable, Identifiable, Hashable {
     let id: Int
     let fullName: String
     let name: String

@@ -3,6 +3,11 @@ import SwiftUI
 struct SettingsView: View {
     @StateObject private var auth = GitHubAuth.shared
     @State private var showingSignIn = false
+    @State private var ipaCount = 0
+
+    private var appVersion: String {
+        Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "1.0"
+    }
 
     var body: some View {
         NavigationStack {
@@ -24,17 +29,20 @@ struct SettingsView: View {
                 }
 
                 Section("Storage") {
-                    LabeledContent("IPA Files", value: "0")
+                    LabeledContent("IPA Files", value: "\(ipaCount)")
                 }
 
                 Section("About") {
-                    LabeledContent("iForge", value: "1.0.0")
+                    LabeledContent("iForge", value: appVersion)
                     Text("Build once. Sign anywhere.").foregroundStyle(.secondary)
                 }
             }
             .navigationTitle("Settings")
             .sheet(isPresented: $showingSignIn) { GitHubSignInView() }
-            .task { await auth.restoreSession() }
+            .task {
+                await auth.restoreSession()
+                ipaCount = IPAFilesView.savedFiles().count
+            }
         }
     }
 }

@@ -9,16 +9,25 @@ struct BuildConfigView: View {
     @State private var allowPackagePlugins = false
     @State private var isStarting = false
     @State private var statusMessage: String?
+    @State private var isSuccess = false
+    @StateObject private var service = BuildService.shared
 
     init(repository: GitHubRepository) {
         self.repository = repository
         _branch = State(initialValue: repository.defaultBranch)
+        if let saved = BuildService.shared.rememberedSettings(for: repository) {
+            _branch = State(initialValue: saved.branch)
+            _configuration = State(initialValue: saved.configuration)
+            _cleanBuild = State(initialValue: saved.clean)
+            _allowPackagePlugins = State(initialValue: saved.plugins)
+        }
     }
 
     var body: some View {
         Form {
             Section("Repository") {
                 LabeledContent("Project", value: repository.fullName)
+                LabeledContent("Visibility", value: repository.isPrivate ? "Private" : "Public")
                 TextField("Branch", text: $branch)
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
@@ -39,7 +48,7 @@ struct BuildConfigView: View {
                     Task { await start() }
                 } label: {
                     if isStarting {
-                        HStack { ProgressView(); Text("Starting…") }
+                        HStack { ProgressView(); Text("Installing workflow and starting…") }
                     } else {
                         Label("Start Build", systemImage: "play.fill")
                     }
@@ -48,7 +57,10 @@ struct BuildConfigView: View {
             }
 
             if let statusMessage {
-                Section { Text(statusMessage).foregroundStyle(.secondary) }
+                Section {
+                    Label(statusMessage, systemImage: isSuccess ? "checkmark.circle.fill" : "exclamationmark.triangle.fill")
+                        .foregroundStyle(isSuccess ? .green : .red)
+                }
             }
         }
         .navigationTitle("New Build")
@@ -69,10 +81,14 @@ struct BuildConfigView: View {
         )
 
         do {
+            BuildService.shared.cache(repository: repository)
             try await BuildService.shared.start(request)
-            statusMessage = "Build queued in \(repository.fullName)."
+            isSuccess = true
+            statusMessage = "Build queued in \(repository.fullName). Track it in the Builds tab."
         } catch {
+            isSuccess = false
             statusMessage = error.localizedDescription
+            UINotificationFeedbackGenerator().notificationOccurred(.error)
         }
     }
 }
