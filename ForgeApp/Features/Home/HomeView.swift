@@ -1,10 +1,12 @@
 import SwiftUI
 
 struct ContentView: View {
+    @AppStorage(OnboardingGate.key) private var onboardingCompleted = false
     @State private var selectedTab = 0
 
     var body: some View {
-        TabView(selection: $selectedTab) {
+        if onboardingCompleted {
+            TabView(selection: $selectedTab) {
             HomeView(selectedTab: $selectedTab)
                 .tabItem { Label("Home", systemImage: "house.fill") }
                 .tag(0)
@@ -26,5 +28,8 @@ struct ContentView: View {
                 .tag(4)
         }
         .tint(.purple)
+        } else {
+            OnboardingView()
+        }
     }
 }

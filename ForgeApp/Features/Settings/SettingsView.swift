@@ -2,6 +2,7 @@ import SwiftUI
 
 struct SettingsView: View {
     @StateObject private var auth = GitHubAuth.shared
+    @AppStorage(NotificationManager.enabledKey) private var notificationsEnabled = true
     @State private var showingSignIn = false
     @State private var ipaCount = 0
 
@@ -26,6 +27,15 @@ struct SettingsView: View {
                 Section("Build Defaults") {
                     LabeledContent("Configuration", value: "Release")
                     LabeledContent("Minimum iOS", value: "17.0+")
+                }
+
+                Section("Notifications") {
+                    Toggle("Build Notifications", isOn: $notificationsEnabled)
+                        .onChange(of: notificationsEnabled) { _, enabled in
+                            if enabled { NotificationManager.shared.requestAuthorization() }
+                        }
+                    Text("Get notified when a build finishes.")
+                        .font(.footnote).foregroundStyle(.secondary)
                 }
 
                 Section("Storage") {

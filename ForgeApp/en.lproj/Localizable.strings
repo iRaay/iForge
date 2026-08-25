@@ -1,0 +1,103 @@
+/* iForge — English */
+
+"Home" = "Home";
+"Projects" = "Projects";
+"Builds" = "Builds";
+"IPA Files" = "IPA Files";
+"Settings" = "Settings";
+
+"Build once. Sign anywhere." = "Build once. Sign anywhere.";
+"Build iOS apps from your repositories." = "Build iOS apps from your repositories.";
+"Connect GitHub to get started" = "Connect GitHub to get started";
+"New Build" = "New Build";
+"Choose a repository, configure a build, and receive a ready-to-sign IPA." = "Choose a repository, configure a build, and receive a ready-to-sign IPA.";
+"Select a project" = "Select a project";
+"Recent Builds" = "Recent Builds";
+"See All" = "See All";
+"No Builds Yet" = "No Builds Yet";
+"Select a project and start your first build." = "Select a project and start your first build.";
+"Connect GitHub, select a project, and start your first build." = "Connect GitHub, select a project, and start your first build.";
+"Good morning" = "Good morning";
+"Good afternoon" = "Good afternoon";
+"Good evening" = "Good evening";
+
+"My Repositories" = "My Repositories";
+"Search repositories" = "Search repositories";
+"Loading repositories…" = "Loading repositories…";
+"Couldn't load repositories" = "Couldn't load repositories";
+"Retry" = "Retry";
+"Private" = "Private";
+
+"Build Configuration" = "Build Configuration";
+"Branch" = "Branch";
+"Configuration" = "Configuration";
+"Clean Build" = "Clean Build";
+"Allow Package Plugins" = "Allow Package Plugins";
+"Start Build" = "Start Build";
+"Installing workflow…" = "Installing workflow…";
+"Dispatching build…" = "Dispatching build…";
+"Waiting for the run to start…" = "Waiting for the run to start…";
+"Build Error" = "Build Error";
+
+"All" = "All";
+"Queued" = "Queued";
+"Building" = "Building";
+"Success" = "Success";
+"Failed" = "Failed";
+
+"Pipeline" = "Pipeline";
+"Download IPA" = "Download IPA";
+"View IPA Files" = "View IPA Files";
+
+"IPAs from successful builds will be available here." = "IPAs from successful builds will be available here.";
+"Share" = "Share";
+"Delete" = "Delete";
+
+"Downloading…" = "Downloading…";
+"Download Complete" = "Download Complete";
+"IPA saved to your library." = "IPA saved to your library.";
+"Download Failed" = "Download Failed";
+"Done" = "Done";
+
+"Continue with GitHub" = "Continue with GitHub";
+"Skip for Now" = "Skip for Now";
+"Get Started" = "Get Started";
+"Build from GitHub" = "Build from GitHub";
+"Any repository, any branch — straight to IPA." = "Any repository, any branch — straight to IPA.";
+"Live Pipeline" = "Live Pipeline";
+"Watch every build step in real time." = "Watch every build step in real time.";
+"IPA Library" = "IPA Library";
+"Download and share with Feather." = "Download and share with Feather.";
+
+"Account" = "Account";
+"GitHub" = "GitHub";
+"Not connected" = "Not connected";
+"Disconnect" = "Disconnect";
+"Connect securely to view repositories and run iForge in your selected project." = "Connect securely to view repositories and run iForge in your selected project.";
+"Notifications" = "Notifications";
+"Build Notifications" = "Build Notifications";
+"Get notified when a build finishes." = "Get notified when a build finishes.";
+"Storage" = "Storage";
+"About" = "About";
+
+"Enter this code on github.com/login/device" = "Enter this code on github.com/login/device";
+"Copy Code" = "Copy Code";
+"Copied!" = "Copied!";
+"Open GitHub" = "Open GitHub";
+"Waiting for authorization…" = "Waiting for authorization…";
+"Authorization complete." = "Authorization complete.";
+"Authorization denied or expired. Try again." = "Authorization denied or expired. Try again.";
+
+"Build Succeeded" = "Build Succeeded";
+"Build Failed" = "Build Failed";
+"%@ · branch %@" = "%@ · branch %@";
+
+"Not connected to GitHub." = "Not connected to GitHub.";
+"GitHub request failed (HTTP %lld)." = "GitHub request failed (HTTP %lld).";
+"GitHub API rate limit reached. Try again later." = "GitHub API rate limit reached. Try again later.";
+"GitHub returned an unexpected response." = "GitHub returned an unexpected response.";
+"Authorization pending…" = "Authorization pending…";
+"Authorization denied or expired. Start again." = "Authorization denied or expired. Start again.";
+"Device authorization failed." = "Device authorization failed.";
+"Client ID missing. Add GITHUB_OAUTH_CLIENT_ID to Info.plist." = "Client ID missing. Add GITHUB_OAUTH_CLIENT_ID to Info.plist.";
+"Connect GitHub to install iForge in a repository and start builds." = "Connect GitHub to install iForge in a repository and start builds.";

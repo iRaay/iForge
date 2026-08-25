@@ -1,0 +1,103 @@
+/* iForge — العربية */
+
+"Home" = "الرئيسية";
+"Projects" = "المشاريع";
+"Builds" = "البناءات";
+"IPA Files" = "ملفات IPA";
+"Settings" = "الإعدادات";
+
+"Build once. Sign anywhere." = "ابنِ مرة واحدة. وَقِّع في أي مكان.";
+"Build iOS apps from your repositories." = "ابنِ تطبيقات iOS من مستودعاتك مباشرة.";
+"Connect GitHub to get started" = "اربط GitHub للبدء";
+"New Build" = "بناء جديد";
+"Choose a repository, configure a build, and receive a ready-to-sign IPA." = "اختر مستودعاً، اضبط البناء، واحصل على IPA جاهز للتوقيع.";
+"Select a project" = "اختر مشروعاً";
+"Recent Builds" = "آخر البناءات";
+"See All" = "عرض الكل";
+"No Builds Yet" = "لا بناءات بعد";
+"Select a project and start your first build." = "اختر مشروعاً وابدأ أول بناء لك.";
+"Connect GitHub, select a project, and start your first build." = "اربط GitHub، اختر مشروعاً، وابدأ أول بناء لك.";
+"Good morning" = "صباح الخير";
+"Good afternoon" = "طاب يومك";
+"Good evening" = "مساء الخير";
+
+"My Repositories" = "مستودعاتي";
+"Search repositories" = "ابحث في المستودعات";
+"Loading repositories…" = "جارٍ تحميل المستودعات…";
+"Couldn't load repositories" = "تعذر تحميل المستودعات";
+"Retry" = "إعادة المحاولة";
+"Private" = "خاص";
+
+"Build Configuration" = "إعدادات البناء";
+"Branch" = "الفرع";
+"Configuration" = "نوع الترجمة";
+"Clean Build" = "بناء نظيف";
+"Allow Package Plugins" = "السماح بإضافات الحزم";
+"Start Build" = "ابدأ البناء";
+"Installing workflow…" = "جارٍ تثبيت الـ workflow…";
+"Dispatching build…" = "جارٍ إرسال البناء…";
+"Waiting for the run to start…" = "بانتظار بدء التشغيل…";
+"Build Error" = "خطأ في البناء";
+
+"All" = "الكل";
+"Queued" = "في الطابور";
+"Building" = "قيد البناء";
+"Success" = "نجح";
+"Failed" = "فشل";
+
+"Pipeline" = "مراحل البناء";
+"Download IPA" = "تنزيل IPA";
+"View IPA Files" = "عرض ملفات IPA";
+
+"IPAs from successful builds will be available here." = "ملفات IPA من البناءات الناجحة ستظهر هنا.";
+"Share" = "مشاركة";
+"Delete" = "حذف";
+
+"Downloading…" = "جارٍ التنزيل…";
+"Download Complete" = "اكتمل التنزيل";
+"IPA saved to your library." = "تم حفظ IPA في مكتبتك.";
+"Download Failed" = "فشل التنزيل";
+"Done" = "تم";
+
+"Continue with GitHub" = "المتابعة عبر GitHub";
+"Skip for Now" = "تخطَّ الآن";
+"Get Started" = "هيا نبدأ";
+"Build from GitHub" = "ابنِ من GitHub";
+"Any repository, any branch — straight to IPA." = "أي مستودع، أي فرع — مباشرة إلى IPA.";
+"Live Pipeline" = "مراحل حية";
+"Watch every build step in real time." = "تابع كل خطوة بناء لحظة بلحظة.";
+"IPA Library" = "مكتبة IPA";
+"Download and share with Feather." = "نزّل وشارك مع Feather.";
+
+"Account" = "الحساب";
+"GitHub" = "GitHub";
+"Not connected" = "غير متصل";
+"Disconnect" = "قطع الاتصال";
+"Connect securely to view repositories and run iForge in your selected project." = "اتصل بأمان لعرض مستودعاتك وتشغيل iForge داخل مشروعك المختار.";
+"Notifications" = "الإشعارات";
+"Build Notifications" = "إشعارات البناء";
+"Get notified when a build finishes." = "أبلغني عند انتهاء أي بناء.";
+"Storage" = "التخزين";
+"About" = "حول التطبيق";
+
+"Enter this code on github.com/login/device" = "أدخل هذا الرمز على github.com/login/device";
+"Copy Code" = "نسخ الرمز";
+"Copied!" = "تم النسخ!";
+"Open GitHub" = "فتح GitHub";
+"Waiting for authorization…" = "بانتظار التفويض…";
+"Authorization complete." = "اكتمل التفويض.";
+"Authorization denied or expired. Try again." = "رُفض التفويض أو انتهت صلاحيته. حاول مجدداً.";
+
+"Build Succeeded" = "نجح البناء ✓";
+"Build Failed" = "فشل البناء ✗";
+"%@ · branch %@" = "%@ · الفرع %@";
+
+"Not connected to GitHub." = "غير متصل بـ GitHub.";
+"GitHub request failed (HTTP %lld)." = "فشل طلب GitHub (HTTP %lld).";
+"GitHub API rate limit reached. Try again later." = "تم استهلاك حد GitHub API. حاول لاحقاً.";
+"GitHub returned an unexpected response." = "أعاد GitHub استجابة غير متوقعة.";
+"Authorization pending…" = "التفويض قيد الانتظار…";
+"Authorization denied or expired. Start again." = "رُفض التفويض أو انتهت صلاحيته. ابدأ من جديد.";
+"Device authorization failed." = "فشل تفويض الجهاز.";
+"Client ID missing. Add GITHUB_OAUTH_CLIENT_ID to Info.plist." = "Client ID مفقود. أضف GITHUB_OAUTH_CLIENT_ID إلى Info.plist.";
+"Connect GitHub to install iForge in a repository and start builds." = "اربط GitHub لتثبيت iForge في مستودع وبدء البناءات.";
