@@ -19,6 +19,44 @@ struct GitHubRepository: Codable, Identifiable, Hashable {
     }
 }
 
+struct GitHubWorkflowRun: Decodable, Identifiable {
+    let id: Int
+    let status: String
+    let conclusion: String?
+    let createdAt: String
+
+    enum CodingKeys: String, CodingKey {
+        case id, status, conclusion
+        case createdAt = "created_at"
+    }
+}
+
+struct GitHubWorkflowRunsResponse: Decodable {
+    let workflowRuns: [GitHubWorkflowRun]
+
+    enum CodingKeys: String, CodingKey {
+        case workflowRuns = "workflow_runs"
+    }
+}
+
+struct GitHubArtifact: Decodable, Identifiable {
+    let id: Int
+    let name: String
+    let sizeInBytes: Int
+    let archiveDownloadURL: String
+    let expired: Bool
+
+    enum CodingKeys: String, CodingKey {
+        case id, name, expired
+        case sizeInBytes = "size_in_bytes"
+        case archiveDownloadURL = "archive_download_url"
+    }
+}
+
+struct GitHubArtifactsResponse: Decodable {
+    let artifacts: [GitHubArtifact]
+}
+
 struct GitHubDeviceCodeResponse: Decodable {
     let deviceCode: String
     let userCode: String
