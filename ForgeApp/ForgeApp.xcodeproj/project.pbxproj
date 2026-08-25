@@ -151,6 +151,17 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A10000010000000000000004 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A30000010000000000000002 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 				A10000010000000000000113 /* GitHubAuth.swift in Sources */,
 				A10000010000000000000114 /* GitHubSignInView.swift in Sources */,
 				A10000010000000000000101 /* iForgeApp.swift in Sources */,
@@ -165,17 +176,6 @@
 				A10000010000000000000110 /* BuildsView.swift in Sources */,
 				A10000010000000000000111 /* IPAFilesView.swift in Sources */,
 				A10000010000000000000112 /* SettingsView.swift in Sources */,
-				A10000010000000000000004 /* Assets.xcassets in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXResourcesBuildPhase section */
-
-/* Begin PBXSourcesBuildPhase section */
-		A30000010000000000000002 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
