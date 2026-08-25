@@ -34,9 +34,9 @@
 	A10000010000000000000117 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A70000010000000000000001 /* Localizable.strings */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXFileReference section */
 		A20000010000000000000201 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		A20000010000000000000202 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/Localizable.strings; sourceTree = "<group>"; };
-/* Begin PBXFileReference section */
 		A20000010000000000000010 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A20000010000000000000020 /* iForge.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iForge.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A20000010000000000000030 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -75,6 +75,7 @@
 		};
 /* End PBXFrameworksBuildPhase section */
 
+/* Begin PBXVariantGroup section */
 		A70000010000000000000001 /* Localizable.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -83,7 +84,9 @@
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
-		 };
+		};
+/* End PBXVariantGroup section */
+
 /* Begin PBXGroup section */
 		A40000010000000000000001 = {
 			isa = PBXGroup;
@@ -173,8 +176,8 @@
 			knownRegions = (
 				en,
 				Base,
-					ar,
-		);
+				ar,
+			);
 			mainGroup = A40000010000000000000001;
 			productRefGroup = A40000010000000000000003;
 			projectDirPath = "";
