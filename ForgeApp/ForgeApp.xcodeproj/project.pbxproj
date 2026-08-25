@@ -20,6 +20,8 @@
 		A10000010000000000000110 /* BuildsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000110 /* BuildsView.swift */; };
 		A10000010000000000000111 /* IPAFilesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000111 /* IPAFilesView.swift */; };
 		A10000010000000000000112 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000112 /* SettingsView.swift */; };
+		A10000010000000000000113 /* GitHubAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000113 /* GitHubAuth.swift */; };
+		A10000010000000000000114 /* GitHubSignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000114 /* GitHubSignInView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,6 +40,8 @@
 		A20000010000000000000110 /* BuildsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Builds/BuildsView.swift; sourceTree = "<group>"; };
 		A20000010000000000000111 /* IPAFilesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/IPAFiles/IPAFilesView.swift; sourceTree = "<group>"; };
 		A20000010000000000000112 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Settings/SettingsView.swift; sourceTree = "<group>"; };
+		A20000010000000000000113 /* GitHubAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/GitHub/GitHubAuth.swift; sourceTree = "<group>"; };
+		A20000010000000000000114 /* GitHubSignInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Authentication/GitHubSignInView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -74,6 +78,8 @@
 				A20000010000000000000110 /* BuildsView.swift */,
 				A20000010000000000000111 /* IPAFilesView.swift */,
 				A20000010000000000000112 /* SettingsView.swift */,
+				A20000010000000000000113 /* GitHubAuth.swift */,
+				A20000010000000000000114 /* GitHubSignInView.swift */,
 				A20000010000000000000010 /* Info.plist */,
 				A20000010000000000000030 /* Assets.xcassets */,
 			);
@@ -145,6 +151,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A10000010000000000000113 /* GitHubAuth.swift in Sources */,
+				A10000010000000000000114 /* GitHubSignInView.swift in Sources */,
 				A10000010000000000000101 /* iForgeApp.swift in Sources */,
 				A10000010000000000000102 /* GitHubModels.swift in Sources */,
 				A10000010000000000000103 /* GitHubAppConfig.swift in Sources */,

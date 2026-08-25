@@ -1,13 +1,21 @@
 import SwiftUI
 
 struct SettingsView: View {
+    @StateObject private var auth = GitHubAuth.shared
+    @State private var showingSignIn = false
+
     var body: some View {
         NavigationStack {
             Form {
                 Section("Account") {
-                    LabeledContent("GitHub", value: "Not connected")
-                    Text("Secure GitHub sign-in will be added in the next milestone. iForge will never require a fixed account or repository.")
-                        .font(.footnote).foregroundStyle(.secondary)
+                    if let user = auth.user {
+                        LabeledContent("GitHub", value: "@\(user.login)")
+                        Button("Disconnect", role: .destructive) { auth.disconnect() }
+                    } else {
+                        Button("Connect GitHub", systemImage: "person.badge.key") { showingSignIn = true }
+                        Text("Connect securely to view repositories and run iForge in your selected project.")
+                            .font(.footnote).foregroundStyle(.secondary)
+                    }
                 }
 
                 Section("Build Defaults") {
@@ -25,6 +33,8 @@ struct SettingsView: View {
                 }
             }
             .navigationTitle("Settings")
+            .sheet(isPresented: $showingSignIn) { GitHubSignInView() }
+            .task { await auth.restoreSession() }
         }
     }
 }
