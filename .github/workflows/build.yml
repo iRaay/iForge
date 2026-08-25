@@ -41,7 +41,7 @@ jobs:
       # ----------------------------------------------
 
       - name: Checkout iForge
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       # ----------------------------------------------
       # Clone Target Repository
@@ -145,7 +145,7 @@ jobs:
       # ----------------------------------------------
 
       - name: Upload IPA Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
 
         with:
           name: ${{ steps.ipa.outputs.name }}
@@ -163,7 +163,7 @@ jobs:
       - name: Upload Build Logs
         if: always()
 
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
 
         with:
           name: iForge-build-logs
