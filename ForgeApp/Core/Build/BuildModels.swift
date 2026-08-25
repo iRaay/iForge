@@ -8,7 +8,7 @@ struct BuildRequest: Hashable {
     var allowPackagePlugins: Bool
 }
 
-enum BuildConfiguration: String, CaseIterable, Identifiable {
+enum BuildConfiguration: String, Codable, CaseIterable, Identifiable {
     case release = "Release"
     case debug = "Debug"
     var id: String { rawValue }
