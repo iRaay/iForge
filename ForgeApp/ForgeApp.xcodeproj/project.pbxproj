@@ -31,7 +31,7 @@
 		A10000010000000000000121 /* IPADownloadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000121 /* IPADownloadView.swift */; };
 	A10000010000000000000115 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000115 /* OnboardingView.swift */; };
 	A10000010000000000000116 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000116 /* NotificationManager.swift */; };
-	A10000010000000000000117 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A70000010000000000000001 /* Localizable.strings */; };
+	A10000010000000000000117 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A80000010000000000000001 /* Localizable.strings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -76,7 +76,7 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		A70000010000000000000001 /* Localizable.strings */ = {
+		A80000010000000000000001 /* Localizable.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
 				A20000010000000000000201 /* en */,
@@ -122,7 +122,7 @@
 				A20000010000000000000121 /* IPADownloadView.swift */,
 				A20000010000000000000010 /* Info.plist */,
 				A20000010000000000000030 /* Assets.xcassets */,
-				A70000010000000000000001 /* Localizable.strings */,
+				A80000010000000000000001 /* Localizable.strings */,
 			);
 			path = "";
 			sourceTree = "<group>";
