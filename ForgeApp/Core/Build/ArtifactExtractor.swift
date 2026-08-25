@@ -37,7 +37,7 @@ enum ArtifactExtractor {
         var zlib = Data([0x78, 0x9C])
         zlib.append(compressed)
         var adlerA: UInt32 = 1, adlerB: UInt32 = 0
-        for byte in expectedSize == 0 ? [] : compressed {
+        for byte in compressed {
             adlerA = (adlerA + UInt32(byte)) % 65521
             adlerB = (adlerB + adlerA) % 65521
         }

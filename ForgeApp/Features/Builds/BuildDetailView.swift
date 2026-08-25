@@ -55,7 +55,7 @@ struct BuildDetailView: View {
                 }
             }
         }
-        .navigationTitle("Build #\(String(build.runId.suffix(6)))")
+        .navigationTitle("Build #\(String(build.runId).suffix(6))")
         .navigationBarTitleDisplayMode(.inline)
         .refreshable { await refresh() }
         .task {
