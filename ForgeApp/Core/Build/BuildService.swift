@@ -2,6 +2,8 @@ import Foundation
 
 @MainActor
 final class BuildService: ObservableObject {
+    static let shared = BuildService()
+
     @Published private(set) var builds: [BuildRecord] = []
 
     /// The workflow will be installed into the selected user's repository after
