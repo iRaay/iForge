@@ -34,8 +34,7 @@ Thank you for your interest in improving iForge! 🛠
 
 ### Workflows
 
-- `forge-build.yml` is the active development engine; changes land there first.
-- `build.yml` is the stable pipeline consumed by the ForgeApp — avoid breaking changes.
+- `forge-build.yml` has been consolidated into `build.yml` after validation.
 
 ### Security
 

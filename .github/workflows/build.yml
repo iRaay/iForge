@@ -7,13 +7,11 @@ on:
         description: "GitHub repository (owner/repo)"
         required: true
         type: string
-
       branch:
         description: "Branch to build"
         required: true
         default: "main"
         type: string
-
       configuration:
         description: "Xcode build configuration"
         required: true
@@ -22,156 +20,88 @@ on:
         options:
           - Release
           - Debug
-
       clean_build:
         description: "Clean DerivedData and previous build artifacts"
+        required: true
+        default: false
+        type: boolean
+      allow_package_plugins:
+        description: "Explicitly allow Swift Package build-tool plugins by skipping Xcode plugin validation"
         required: true
         default: false
         type: boolean
 
 jobs:
   build:
-
     runs-on: macos-latest
-
     steps:
-
-      # ----------------------------------------------
-      # Checkout iForge
-      # ----------------------------------------------
-
-      - name: Checkout iForge
+      - name: Checkout iForge Engine
         uses: actions/checkout@v5
-
-      # ----------------------------------------------
-      # Clone Target Repository
-      # ----------------------------------------------
 
       - name: Clone Repository
         env:
           REPOSITORY: ${{ inputs.repository }}
           BRANCH: ${{ inputs.branch }}
-
         run: |
-          git -c protocol.file.allow=never \
-            clone \
-            --branch "$BRANCH" \
-            --depth 1 \
-            "https://github.com/$REPOSITORY.git" \
-            project
-
-      # ----------------------------------------------
-      # Prepare Source
-      # ----------------------------------------------
+          git -c protocol.file.allow=never clone --branch "$BRANCH" --depth 1 "https://github.com/$REPOSITORY.git" project
 
       - name: Prepare Source
         run: |
           chmod +x scripts/prepare_sources.sh
           ./scripts/prepare_sources.sh
 
-      # ----------------------------------------------
-      # Analyze
-      # ----------------------------------------------
-
       - name: Analyze Project
         env:
           CONFIGURATION: ${{ inputs.configuration }}
           CLEAN_BUILD: ${{ inputs.clean_build }}
-
+          FORGE_ALLOW_PACKAGE_PLUGINS: ${{ inputs.allow_package_plugins }}
         run: |
           chmod +x scripts/analyze.sh
           ./scripts/analyze.sh
-
-      # ----------------------------------------------
-      # Prepare
-      # ----------------------------------------------
 
       - name: Prepare Environment
         run: |
           chmod +x scripts/prepare.sh
           ./scripts/prepare.sh
 
-      # ----------------------------------------------
-      # Build
-      # ----------------------------------------------
-
       - name: Build iOS Scheme
         run: |
           chmod +x scripts/build.sh
           ./scripts/build.sh
-
-      # ----------------------------------------------
-      # Export IPA
-      # ----------------------------------------------
 
       - name: Export IPA
         run: |
           chmod +x scripts/export.sh
           ./scripts/export.sh
 
-      # ----------------------------------------------
-      # Detect IPA
-      # ----------------------------------------------
-
       - name: Detect IPA
         id: ipa
-
         run: |
-
-          IPA_PATH=$(find \
-            project/build/export \
-            -maxdepth 1 \
-            -type f \
-            -name "*.ipa" \
-            -print \
-            -quit)
-
+          IPA_PATH=$(find project/build/export -maxdepth 1 -type f -name "*.ipa" -print -quit)
           if [ -z "$IPA_PATH" ]; then
             echo "❌ No IPA was generated."
             exit 1
           fi
-
           IPA_NAME=$(basename "$IPA_PATH")
-
           echo "path=$IPA_PATH" >> "$GITHUB_OUTPUT"
           echo "name=$IPA_NAME" >> "$GITHUB_OUTPUT"
-
-          echo ""
-          echo "IPA:"
-          echo "$IPA_NAME"
-
-      # ----------------------------------------------
-      # Upload IPA
-      # ----------------------------------------------
+          echo "IPA: $IPA_NAME"
 
       - name: Upload IPA Artifact
         uses: actions/upload-artifact@v5
-
         with:
           name: ${{ steps.ipa.outputs.name }}
-
           path: ${{ steps.ipa.outputs.path }}
-
           if-no-files-found: error
-
           retention-days: 14
-
-      # ----------------------------------------------
-      # Upload Build Log
-      # ----------------------------------------------
 
       - name: Upload Build Logs
         if: always()
-
         uses: actions/upload-artifact@v5
-
         with:
           name: iForge-build-logs
-
           path: |
             project/build/logs/
             project/build/forge.env
-
           if-no-files-found: warn
-
           retention-days: 14
