@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct ForgeApp: App {
+struct iForgeApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
