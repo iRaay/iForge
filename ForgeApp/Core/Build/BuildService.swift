@@ -50,6 +50,7 @@ final class BuildService: ObservableObject {
     func start(_ request: BuildRequest) async throws {
         guard GitHubAuth.shared.isConnected else { throw GitHubAuthError.notConnected }
         remember(request: request)
+        NotificationManager.shared.requestAuthorization()
 
         let api = GitHubAPI.shared
         try await api.installWorkflow(repository: request.repository)
@@ -98,7 +99,15 @@ final class BuildService: ObservableObject {
         for build in trackedBuilds {
             guard let repo = repository(named: build.repositoryFullName) else { continue }
             guard let run = try? await api.fetchRun(id: build.runId, repository: repo) else { continue }
+            let previous = runStates[build.runId]
             runStates[build.runId] = run
+            if previous?.status != "completed", run.status == "completed" {
+                NotificationManager.shared.notifyBuildFinished(
+                    repository: build.repositoryFullName,
+                    branch: build.branch,
+                    succeeded: run.conclusion == "success",
+                    runId: build.runId)
+            }
             if run.status != "completed" || run.conclusion == "success" {
                 jobDetails[build.runId] = (try? await api.fetchJobs(repository: repo, runId: build.runId)) ?? jobDetails[build.runId]
             }

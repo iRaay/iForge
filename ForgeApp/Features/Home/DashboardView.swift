@@ -1,5 +1,14 @@
 import SwiftUI
 
+private func greeting() -> String {
+    let hour = Calendar.current.component(.hour, from: Date())
+    switch hour {
+    case 5..<12: return String(localized: "Good morning")
+    case 12..<17: return String(localized: "Good afternoon")
+    default: return String(localized: "Good evening")
+    }
+}
+
 struct HomeView: View {
     @Binding var selectedTab: Int
     @StateObject private var auth = GitHubAuth.shared
@@ -10,7 +19,8 @@ struct HomeView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
                     VStack(alignment: .leading, spacing: 6) {
-                        Text("iForge").font(.largeTitle.bold())
+                        Text(greeting() + (auth.user.map { ", @\($0.login)" } ?? ""))
+                            .font(.largeTitle.bold())
                         Text("Build iOS apps from your repositories.")
                             .foregroundStyle(.secondary)
                     }
