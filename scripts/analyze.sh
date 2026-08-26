@@ -243,6 +243,48 @@ if find . -type f \( -name ".mise.toml" -o -name "mise.toml" -o -name ".mise.loc
     FORGE_USE_MISE="true"
 fi
 
+# --------------------------------------------------
+# 8. Detect Swift Package Plugin Usage
+# --------------------------------------------------
+
+FORGE_HAS_PACKAGE_PLUGINS="false"
+
+echo ""
+echo "======================================"
+echo "🧩 Swift Package Plugin Detection"
+echo "======================================"
+
+# Check for build-tool plugins in Package.swift or local packages
+if [ "$FORGE_USE_SPM" = "true" ]; then
+    if find . -type f -name "Package.swift" -not -path "./.git/*" -not -path "./build/*" -exec grep -l "buildToolPlugins" {} + | grep -q .; then
+        echo "✅ Build-tool plugins detected in Package.swift"
+        FORGE_HAS_PACKAGE_PLUGINS="true"
+    fi
+    
+    # Check for licenseplist specifically
+    if find . -type f -name "Package.swift" -not -path "./.git/*" -not -path "./build/*" -exec grep -l "licenseplist" {} + | grep -q .; then
+        echo "⚠️ licenseplist package detected"
+        FORGE_HAS_PACKAGE_PLUGINS="true"
+    fi
+    
+    # Check for other common build-tool plugins
+    if find . -type f -name "Package.swift" -not -path "./.git/*" -not -path "./build/*" -exec grep -l -i "plugins\|\.plugin\|buildtool" {} + | grep -q .; then
+        echo "ℹ️ Package plugins configuration detected"
+        FORGE_HAS_PACKAGE_PLUGINS="true"
+    fi
+else
+    echo "ℹ️ Not using Swift Package Manager — skipping plugin detection"
+fi
+
+if [ "$FORGE_HAS_PACKAGE_PLUGINS" = "true" ]; then
+    echo ""
+    echo "========================================"
+    echo "ℹ️ Plugin Information"
+    echo "========================================"
+    echo "If the build fails with plugin validation errors,"
+    echo "re-run with: allow_package_plugins: true"
+fi
+
 CONFIG_FILE="build/forge.env"
 cat > "$CONFIG_FILE" <<EOF
 FORGE_BUILD_TYPE="$BUILD_TYPE"
@@ -250,11 +292,14 @@ FORGE_BUILD_FILE="$BUILD_FILE"
 FORGE_SCHEME="$BEST_SCHEME"
 FORGE_CONFIGURATION="$CONFIGURATION"
 FORGE_CLEAN_BUILD="$CLEAN_BUILD"
+
 FORGE_USE_SPM="$FORGE_USE_SPM"
 FORGE_USE_COCOAPODS="$FORGE_USE_COCOAPODS"
 FORGE_USE_CARTHAGE="$FORGE_USE_CARTHAGE"
 FORGE_USE_MISE="$FORGE_USE_MISE"
-FORGE_ALLOW_PACKAGE_PLUGINS="$FORGE_ALLOW_PACKAGE_PLUGINS"
+FORGE_HAS_PACKAGE_PLUGINS="$FORGE_HAS_PACKAGE_PLUGINS"
+FORGE_ALLOW_PACKAGE_PLUGINS="${FORGE_ALLOW_PACKAGE_PLUGINS:-false}"
+
 FORGE_ENABLE_PREVIEWS="false"
 FORGE_CODE_SIGNING_ALLOWED="NO"
 FORGE_CODE_SIGNING_REQUIRED="NO"
