@@ -1,9 +1,9 @@
 #!/bin/bash
 set -euo pipefail
 
-echo "=============================="
+echo "======================================"
 echo "🛠 Preparing Environment"
-echo "=============================="
+echo "======================================"
 
 cd project
 echo ""
@@ -33,6 +33,7 @@ source "$CONFIG_FILE"
 
 FORGE_CONFIGURATION="${FORGE_CONFIGURATION:-Release}"
 FORGE_CLEAN_BUILD="${FORGE_CLEAN_BUILD:-false}"
+FORGE_HAS_PACKAGE_PLUGINS="${FORGE_HAS_PACKAGE_PLUGINS:-false}"
 
 if [ -z "${FORGE_SCHEME:-}" ]; then
     echo ""
@@ -63,6 +64,8 @@ echo "Carthage:"
 echo "$FORGE_USE_CARTHAGE"
 echo "mise:"
 echo "$FORGE_USE_MISE"
+echo "Has Package Plugins:"
+echo "$FORGE_HAS_PACKAGE_PLUGINS"
 
 # --------------------------------------------------
 # 2. Prepare mise
@@ -102,6 +105,12 @@ if [ "$FORGE_USE_SPM" = "true" ]; then
     echo "📦 Swift Package Manager"
     echo "======================================"
     echo "🔄 Resolving Swift Packages..."
+
+    if [ "$FORGE_HAS_PACKAGE_PLUGINS" = "true" ]; then
+        echo ""
+        echo "⚠️ Project uses Swift Package build-tool plugins"
+        echo "Dependencies may require plugin compilation..."
+    fi
 
     if [ "$FORGE_BUILD_TYPE" = "workspace" ]; then
         xcodebuild \
@@ -280,6 +289,7 @@ FORGE_USE_SPM="$FORGE_USE_SPM"
 FORGE_USE_COCOAPODS="$FORGE_USE_COCOAPODS"
 FORGE_USE_CARTHAGE="$FORGE_USE_CARTHAGE"
 FORGE_USE_MISE="$FORGE_USE_MISE"
+FORGE_HAS_PACKAGE_PLUGINS="${FORGE_HAS_PACKAGE_PLUGINS:-false}"
 FORGE_ALLOW_PACKAGE_PLUGINS="${FORGE_ALLOW_PACKAGE_PLUGINS:-false}"
 
 FORGE_ENABLE_PREVIEWS="${FORGE_ENABLE_PREVIEWS:-false}"
