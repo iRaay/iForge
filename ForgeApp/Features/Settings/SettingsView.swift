@@ -3,6 +3,8 @@ import SwiftUI
 struct SettingsView: View {
     @StateObject private var auth = GitHubAuth.shared
     @AppStorage(NotificationManager.enabledKey) private var notificationsEnabled = true
+    @AppStorage("appLanguage") private var appLanguage = "system"
+    @AppStorage("appTheme") private var appTheme = "system"
     @State private var showingSignIn = false
     @State private var ipaCount = 0
 
@@ -24,8 +26,21 @@ struct SettingsView: View {
                     }
                 }
 
+                Section("Appearance") {
+                    Picker("Theme", selection: $appTheme) {
+                        Label("System", systemImage: "circle.lefthalf.filled").tag("system")
+                        Label("Light", systemImage: "sun.max.fill").tag("light")
+                        Label("Dark", systemImage: "moon.fill").tag("dark")
+                    }
+                    Picker("Language", selection: $appLanguage) {
+                        Text("System").tag("system")
+                        Text("English").tag("en")
+                        Text("العربية").tag("ar")
+                    }
+                }
+
                 Section("Build Defaults") {
-                    LabeledContent("Configuration", value: "Release")
+                    LabeledContent("Xcode Build Type", value: "Release")
                     LabeledContent("Minimum iOS", value: "17.0+")
                 }
 

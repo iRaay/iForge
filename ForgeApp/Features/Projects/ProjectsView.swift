@@ -15,26 +15,40 @@ struct ProjectsView: View {
     var body: some View {
         NavigationStack {
             Group {
-                if !auth.isConnected {
-                    ContentUnavailableView("Connect GitHub", systemImage: "person.badge.key",
-                        description: Text("Sign in from Settings to see your repositories."))
-                } else if isLoading {
-                    ProgressView("Loading repositories…")
-                } else if let error = errorMessage {
-                    ContentUnavailableView("Could Not Load Projects", systemImage: "exclamationmark.triangle",
-                        description: Text(error))
-                } else if filtered.isEmpty {
-                    ContentUnavailableView(query.isEmpty ? "No Repositories" : "No Matches",
-                        systemImage: "folder",
-                        description: Text(query.isEmpty ? "This account has no repositories yet." : "Try a different search."))
-                } else {
-                    repositoryList
+                VStack(spacing: 0) {
+                    NavigationLink { SourceSelectionView() } label: {
+                        Label("New Build", systemImage: "plus.circle.fill")
+                            .font(.headline).frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    .padding(.horizontal)
+                    .padding(.vertical, 10)
+                    .background(.purple.opacity(0.10))
+                    repositoryListOrState
                 }
             }
             .navigationTitle("Projects")
             .searchable(text: $query, prompt: "Search repositories")
             .refreshable { await load() }
             .task { await load() }
+        }
+    }
+
+    @ViewBuilder
+    private var repositoryListOrState: some View {
+        if !auth.isConnected {
+            ContentUnavailableView("Connect GitHub", systemImage: "person.badge.key",
+                description: Text("Sign in from Settings to see your repositories."))
+        } else if isLoading {
+            ProgressView("Loading repositories…")
+        } else if let error = errorMessage {
+            ContentUnavailableView("Could Not Load Projects", systemImage: "exclamationmark.triangle",
+                description: Text(error))
+        } else if filtered.isEmpty {
+            ContentUnavailableView(query.isEmpty ? "No Repositories" : "No Matches",
+                systemImage: "folder",
+                description: Text(query.isEmpty ? "This account has no repositories yet." : "Try a different search."))
+        } else {
+            repositoryList
         }
     }
 

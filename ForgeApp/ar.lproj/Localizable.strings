@@ -101,3 +101,24 @@
 "Device authorization failed." = "فشل تفويض الجهاز.";
 "Client ID missing. Add GITHUB_OAUTH_CLIENT_ID to Info.plist." = "Client ID مفقود. أضف GITHUB_OAUTH_CLIENT_ID إلى Info.plist.";
 "Connect GitHub to install iForge in a repository and start builds." = "اربط GitHub لتثبيت iForge في مستودع وبدء البناءات.";
+
+"Build Defaults" = "إعدادات البناء الافتراضية";
+"Appearance" = "المظهر";
+"Theme" = "الثيم";
+"Language" = "اللغة";
+"System" = "النظام";
+"Light" = "فاتح";
+"Dark" = "داكن";
+"English" = "الإنجليزية";
+"Xcode Build Type" = "نوع بناء Xcode";
+"Choose Source" = "اختر المصدر";
+"GitHub Repository" = "مستودع GitHub";
+"Any Git URL" = "أي رابط Git";
+"Upload ZIP Project" = "رفع مشروع ZIP";
+"Build directly from a repository you can access. No fork required." = "ابنِ مباشرة من مستودع لديك صلاحية الوصول إليه. لا تحتاج إلى fork.";
+"GitLab, Bitbucket, or self-hosted Git over HTTPS." = "GitLab أو Bitbucket أو Git مستضاف ذاتياً عبر HTTPS.";
+"Upload an Xcode project from this device. Coming soon." = "ارفع مشروع Xcode من هذا الجهاز. قريباً.";
+"Select GitHub Repository" = "اختر مستودع GitHub";
+"iForge installs its workflow directly into the selected repository. You need write access; a fork is not required." = "يثبت iForge الـ workflow مباشرة في المستودع المختار. تحتاج صلاحية الكتابة؛ ولا تحتاج إلى fork.";
+"Git Repository" = "مستودع Git";
+"Public HTTPS Git URLs are supported first. Private Git credentials will be added through secure provider authentication." = "ندعم أولاً روابط Git العامة عبر HTTPS. ستُضاف بيانات المستودعات الخاصة عبر مصادقة آمنة.";

@@ -6,7 +6,8 @@
 "IPA Files" = "IPA Files";
 "Settings" = "Settings";
 
-"Build once. Sign anywhere." = "Build once. Sign anywhere.";
+"Build Defaults" = "Build Defaults";
+"Appearance" = "Appearance";
 "Build iOS apps from your repositories." = "Build iOS apps from your repositories.";
 "Connect GitHub to get started" = "Connect GitHub to get started";
 "New Build" = "New Build";

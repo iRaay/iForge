@@ -32,6 +32,7 @@
 	AB0000010000000000000001 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0000010000000000000004 /* OnboardingView.swift */; };
 	AB0000010000000000000002 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0000010000000000000005 /* NotificationManager.swift */; };
 	AB0000010000000000000003 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = AB0000010000000000000006 /* Localizable.strings */; };
+		AB0000010000000000000023 /* SourceSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0000010000000000000022 /* SourceSelectionView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -63,6 +64,7 @@
 		A20000010000000000000121 /* IPADownloadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/IPAFiles/IPADownloadView.swift; sourceTree = "<group>"; };
 	AB0000010000000000000004 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Onboarding/OnboardingView.swift; sourceTree = "<group>"; };
 	AB0000010000000000000005 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/Notifications/NotificationManager.swift; sourceTree = "<group>"; };
+		AB0000010000000000000022 /* SourceSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Projects/SourceSelectionView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,6 +101,7 @@
 		A40000010000000000000002 /* ForgeApp */ = {
 			isa = PBXGroup;
 			children = (
+				AB0000010000000000000022 /* SourceSelectionView.swift */,
 				A20000010000000000000101 /* iForgeApp.swift */,
 				A20000010000000000000102 /* GitHubModels.swift */,
 				A20000010000000000000103 /* GitHubAppConfig.swift */,
@@ -205,6 +208,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AB0000010000000000000023 /* SourceSelectionView.swift in Sources */,
 				AB0000010000000000000002 /* NotificationManager.swift in Sources */,
 				AB0000010000000000000001 /* OnboardingView.swift in Sources */,
 				A10000010000000000000117 /* WorkflowTemplate.swift in Sources */,
