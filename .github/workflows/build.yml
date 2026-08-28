@@ -30,6 +30,11 @@ on:
         required: true
         default: false
         type: boolean
+      project_path:
+        description: "Optional path containing the main Xcode project (for example src/ios)"
+        required: false
+        default: ""
+        type: string
 
 jobs:
   build:
@@ -55,6 +60,7 @@ jobs:
           CONFIGURATION: ${{ inputs.configuration }}
           CLEAN_BUILD: ${{ inputs.clean_build }}
           FORGE_ALLOW_PACKAGE_PLUGINS: ${{ inputs.allow_package_plugins }}
+          FORGE_PROJECT_PATH: ${{ inputs.project_path }}
         run: |
           chmod +x scripts/analyze.sh
           ./scripts/analyze.sh

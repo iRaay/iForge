@@ -33,6 +33,20 @@ source "$CONFIG_FILE"
 
 FORGE_CONFIGURATION="${FORGE_CONFIGURATION:-Release}"
 FORGE_CLEAN_BUILD="${FORGE_CLEAN_BUILD:-false}"
+FORGE_PROJECT_PATH="${FORGE_PROJECT_PATH:-.}"
+
+if [ "$FORGE_PROJECT_PATH" != "." ]; then
+    case "$FORGE_PROJECT_PATH" in
+        /*|../*|*/../*|*"/.."*|*"//"*)
+            echo "❌ FORGE_PROJECT_PATH must be inside project/."
+            exit 1
+            ;;
+    esac
+    if [ ! -d "$FORGE_PROJECT_PATH" ]; then
+        echo "❌ Project path does not exist: $FORGE_PROJECT_PATH"
+        exit 1
+    fi
+fi
 
 if [ -z "${FORGE_SCHEME:-}" ]; then
     echo ""

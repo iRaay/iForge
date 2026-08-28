@@ -12,6 +12,23 @@ mkdir -p build/logs
 CONFIGURATION="${CONFIGURATION:-Release}"
 CLEAN_BUILD="${CLEAN_BUILD:-false}"
 FORGE_ALLOW_PACKAGE_PLUGINS="${FORGE_ALLOW_PACKAGE_PLUGINS:-false}"
+FORGE_PROJECT_PATH="${FORGE_PROJECT_PATH:-.}"
+
+# Restrict an optional search path to the cloned project directory.
+if [ "$FORGE_PROJECT_PATH" != "." ]; then
+    case "$FORGE_PROJECT_PATH" in
+        /*|../*|*/../*|*"/.."|*"//"*)
+            echo "❌ FORGE_PROJECT_PATH must be a relative path inside project/."
+            exit 1
+            ;;
+    esac
+    if [ ! -d "$FORGE_PROJECT_PATH" ]; then
+        echo "❌ FORGE_PROJECT_PATH does not exist: $FORGE_PROJECT_PATH"
+        exit 1
+    fi
+fi
+
+SEARCH_ROOT="$FORGE_PROJECT_PATH"
 
 case "$FORGE_ALLOW_PACKAGE_PLUGINS" in
     true|false) ;;
@@ -21,12 +38,15 @@ case "$FORGE_ALLOW_PACKAGE_PLUGINS" in
         ;;
 esac
 
-WORKSPACE=$(find . -type d -name "*.xcworkspace" \
-    -not -path "./.git/*" \
-    -not -path "./build/*" \
+WORKSPACE=$(find "$SEARCH_ROOT" -type d -name "*.xcworkspace" \
+    -not -path "*/.git/*" \
+    -not -path "*/build/*" \
     -not -path "*.xcodeproj/*" \
     -print | sort | head -n 1)
-PROJECT=$(find . -type d -name "*.xcodeproj" -not -path "./.git/*" -not -path "./build/*" -print | sort | head -n 1)
+PROJECT=$(find "$SEARCH_ROOT" -type d -name "*.xcodeproj" \
+    -not -path "*/.git/*" \
+    -not -path "*/build/*" \
+    -print | sort | head -n 1)
 
 if [ -n "$WORKSPACE" ]; then
     BUILD_TYPE="workspace"
@@ -264,6 +284,7 @@ FORGE_BUILD_FILE="$BUILD_FILE"
 FORGE_SCHEME="$BEST_SCHEME"
 FORGE_CONFIGURATION="$CONFIGURATION"
 FORGE_CLEAN_BUILD="$CLEAN_BUILD"
+FORGE_PROJECT_PATH="$FORGE_PROJECT_PATH"
 FORGE_USE_SPM="$FORGE_USE_SPM"
 FORGE_USE_COCOAPODS="$FORGE_USE_COCOAPODS"
 FORGE_USE_CARTHAGE="$FORGE_USE_CARTHAGE"
