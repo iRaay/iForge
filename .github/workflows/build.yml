@@ -50,6 +50,13 @@ jobs:
         run: |
           git -c protocol.file.allow=never clone --branch "$BRANCH" --depth 1 "https://github.com/$REPOSITORY.git" project
 
+      - name: Prepare Project Configuration
+        run: |
+          if [ -f "project/src/ios/Configs/ProviderCustomization.xcconfig.example" ] && [ ! -f "project/src/ios/Configs/ProviderCustomization.xcconfig" ]; then
+            cp "project/src/ios/Configs/ProviderCustomization.xcconfig.example" "project/src/ios/Configs/ProviderCustomization.xcconfig"
+            echo "Created missing project configuration from its example template."
+          fi
+
       - name: Prepare Source
         run: |
           chmod +x scripts/prepare_sources.sh
