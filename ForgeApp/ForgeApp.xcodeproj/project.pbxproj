@@ -33,6 +33,12 @@
 	AB0000010000000000000002 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0000010000000000000005 /* NotificationManager.swift */; };
 	AB0000010000000000000003 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = AB0000010000000000000006 /* Localizable.strings */; };
 		AB0000010000000000000023 /* SourceSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0000010000000000000022 /* SourceSelectionView.swift */; };
+		AC0000010000000000000011 /* CairoPlay-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AC0000010000000000000001 /* CairoPlay-Regular.ttf */; };
+		AC0000010000000000000012 /* CairoPlay-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AC0000010000000000000002 /* CairoPlay-Medium.ttf */; };
+		AC0000010000000000000013 /* CairoPlay-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AC0000010000000000000003 /* CairoPlay-SemiBold.ttf */; };
+		AC0000010000000000000014 /* CairoPlay-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AC0000010000000000000004 /* CairoPlay-Bold.ttf */; };
+		AC0000010000000000000015 /* CairoPlay-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AC0000010000000000000005 /* CairoPlay-ExtraBold.ttf */; };
+		AC0000010000000000000016 /* FontExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000010000000000000006 /* FontExtensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -65,6 +71,12 @@
 	AB0000010000000000000004 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Onboarding/OnboardingView.swift; sourceTree = "<group>"; };
 	AB0000010000000000000005 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/Notifications/NotificationManager.swift; sourceTree = "<group>"; };
 		AB0000010000000000000022 /* SourceSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Projects/SourceSelectionView.swift; sourceTree = "<group>"; };
+		AC0000010000000000000001 /* CairoPlay-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Fonts/CairoPlay-Regular.ttf ; sourceTree = "<group>"; };
+		AC0000010000000000000002 /* CairoPlay-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Fonts/CairoPlay-Medium.ttf ; sourceTree = "<group>"; };
+		AC0000010000000000000003 /* CairoPlay-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Fonts/CairoPlay-SemiBold.ttf ; sourceTree = "<group>"; };
+		AC0000010000000000000004 /* CairoPlay-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Fonts/CairoPlay-Bold.ttf ; sourceTree = "<group>"; };
+		AC0000010000000000000005 /* CairoPlay-ExtraBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Fonts/CairoPlay-ExtraBold.ttf ; sourceTree = "<group>"; };
+		AC0000010000000000000006 /* FontExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/Extensions/FontExtensions.swift ; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,6 +113,12 @@
 		A40000010000000000000002 /* ForgeApp */ = {
 			isa = PBXGroup;
 			children = (
+				AC0000010000000000000006 /* FontExtensions.swift */,
+				AC0000010000000000000005 /* CairoPlay-ExtraBold.ttf */,
+				AC0000010000000000000004 /* CairoPlay-Bold.ttf */,
+				AC0000010000000000000003 /* CairoPlay-SemiBold.ttf */,
+				AC0000010000000000000002 /* CairoPlay-Medium.ttf */,
+				AC0000010000000000000001 /* CairoPlay-Regular.ttf */,
 				AB0000010000000000000022 /* SourceSelectionView.swift */,
 				A20000010000000000000101 /* iForgeApp.swift */,
 				A20000010000000000000102 /* GitHubModels.swift */,
@@ -196,6 +214,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AC0000010000000000000015 /* CairoPlay-ExtraBold.ttf in Resources */,
+				AC0000010000000000000014 /* CairoPlay-Bold.ttf in Resources */,
+				AC0000010000000000000013 /* CairoPlay-SemiBold.ttf in Resources */,
+				AC0000010000000000000012 /* CairoPlay-Medium.ttf in Resources */,
+				AC0000010000000000000011 /* CairoPlay-Regular.ttf in Resources */,
 				AB0000010000000000000003 /* Localizable.strings in Resources */,
 				A10000010000000000000004 /* Assets.xcassets in Resources */,
 			);
@@ -208,6 +231,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AC0000010000000000000016 /* FontExtensions.swift in Sources */,
 				AB0000010000000000000023 /* SourceSelectionView.swift in Sources */,
 				AB0000010000000000000002 /* NotificationManager.swift in Sources */,
 				AB0000010000000000000001 /* OnboardingView.swift in Sources */,

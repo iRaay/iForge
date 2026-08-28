@@ -20,6 +20,14 @@
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>GITHUB_OAUTH_CLIENT_ID</key>
 	<string>Ov23libNT6ImnE8FmGb4</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>CairoPlay-Regular.ttf</string>
+		<string>CairoPlay-Medium.ttf</string>
+		<string>CairoPlay-SemiBold.ttf</string>
+		<string>CairoPlay-Bold.ttf</string>
+		<string>CairoPlay-ExtraBold.ttf</string>
+	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UILaunchScreen</key>
