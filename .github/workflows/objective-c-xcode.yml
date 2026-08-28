@@ -1,6 +1,8 @@
 name: Xcode - Build and Analyze
 
 on:
+  workflow_dispatch:
+
   push:
     branches: [ "main" ]
   pull_request:
