@@ -21,7 +21,11 @@ case "$FORGE_ALLOW_PACKAGE_PLUGINS" in
         ;;
 esac
 
-WORKSPACE=$(find . -type d -name "*.xcworkspace" -not -path "./.git/*" -not -path "./build/*" -print | sort | head -n 1)
+WORKSPACE=$(find . -type d -name "*.xcworkspace" \
+    -not -path "./.git/*" \
+    -not -path "./build/*" \
+    -not -path "*/.xcodeproj/*" \
+    -print | sort | head -n 1)
 PROJECT=$(find . -type d -name "*.xcodeproj" -not -path "./.git/*" -not -path "./build/*" -print | sort | head -n 1)
 
 if [ -n "$WORKSPACE" ]; then
