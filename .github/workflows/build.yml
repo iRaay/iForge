@@ -62,6 +62,21 @@ jobs:
           chmod +x scripts/prepare_sources.sh
           ./scripts/prepare_sources.sh
 
+      - name: Prepare Native Dependencies
+        working-directory: project
+        run: |
+          set -euo pipefail
+          if [ ! -f deps/build_ish.sh ] || [ ! -f deps/prepare_alpine_rootfs.sh ]; then
+            echo "No iForge native dependency build scripts detected; skipping."
+            exit 0
+          fi
+          brew install ninja llvm libarchive pkg-config meson || true
+          chmod +x deps/build_lame.sh deps/build_ffmpeg.sh deps/build_ish.sh deps/prepare_alpine_rootfs.sh
+          ./deps/build_lame.sh
+          ./deps/build_ffmpeg.sh
+          ./deps/build_ish.sh
+          ./deps/prepare_alpine_rootfs.sh
+
       - name: Analyze Project
         env:
           CONFIGURATION: ${{ inputs.configuration }}
