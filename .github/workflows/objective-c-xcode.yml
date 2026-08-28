@@ -2,11 +2,16 @@ name: Xcode - Build and Analyze
 
 on:
   workflow_dispatch:
-
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    inputs:
+      repository:
+        description: "GitHub repository (owner/repo)"
+        required: true
+        type: string
+      branch:
+        description: "Branch to build"
+        required: true
+        default: "main"
+        type: string
 
 jobs:
   build:
