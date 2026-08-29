@@ -8,6 +8,8 @@ final class BuildService: ObservableObject {
     @Published private(set) var trackedBuilds: [TrackedBuild] = []
     @Published private(set) var runStates: [Int: GitHubWorkflowRun] = [:]
     @Published private(set) var jobDetails: [Int: [BuildJob]] = [:]
+    @Published private(set) var diagnostics: [Int: [BuildDiagnostic]] = [:]
+    @Published private(set) var logs: [Int: [BuildLogEntry]] = [:]
 
     private let defaults = UserDefaults.standard
     private static let storageKey = "iforge.trackedBuilds"
@@ -102,11 +104,11 @@ final class BuildService: ObservableObject {
             let previous = runStates[build.runId]
             runStates[build.runId] = run
             if previous?.status != "completed", run.status == "completed" {
-                NotificationManager.shared.notifyBuildFinished(
-                    repository: build.repositoryFullName,
-                    branch: build.branch,
-                    succeeded: run.conclusion == "success",
-                    runId: build.runId)
+                let succeeded = run.conclusion == "success"
+                addDiagnostic(runId: build.runId, severity: succeeded ? .success : .error,
+                              title: succeeded ? "Build completed" : "Build failed",
+                              detail: succeeded ? "The IPA is ready to download." : "Open the pipeline and logs to find the first failed stage.", source: "Build Engine")
+                NotificationManager.shared.notifyBuildFinished(repository: build.repositoryFullName, branch: build.branch, succeeded: succeeded, runId: build.runId)
             }
             if run.status != "completed" || run.conclusion == "success" {
                 jobDetails[build.runId] = (try? await api.fetchJobs(repository: repo, runId: build.runId)) ?? jobDetails[build.runId]
@@ -132,6 +134,22 @@ final class BuildService: ObservableObject {
         if run.status != "completed" { return run.status == "queued" ? .queued : .running }
         return run.conclusion == "success" ? .success : .failed
     }
+
+    // MARK: - Diagnostics and Logs
+
+    func addDiagnostic(runId: Int, severity: DiagnosticSeverity, title: String, detail: String, source: String) {
+        diagnostics[runId, default: []].append(BuildDiagnostic(severity: severity, title: title, detail: detail, source: source))
+    }
+
+    func appendLog(runId: Int, level: DiagnosticSeverity, message: String, source: String) {
+        logs[runId, default: []].append(BuildLogEntry(level: level, message: message, source: source))
+    }
+
+    func clearLogs(runId: Int) {
+        logs[runId] = []
+        diagnostics[runId] = []
+    }
+
 
     private func persist() {
         if let data = try? JSONEncoder().encode(trackedBuilds) {

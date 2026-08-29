@@ -13,6 +13,7 @@ struct BuildDetailView: View {
                 summaryCard
                 statusCard
                 if state == .failed { failureCard }
+                BuildHealthBanner(build: build)
                 pipelineCard
                 if state == .success { ipaButton }
             }

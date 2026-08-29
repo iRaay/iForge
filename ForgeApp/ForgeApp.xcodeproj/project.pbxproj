@@ -40,6 +40,8 @@
 		AC0000010000000000000015 /* CairoPlay-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AC0000010000000000000005 /* CairoPlay-ExtraBold.ttf */; };
 		AC0000010000000000000016 /* FontExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0000010000000000000006 /* FontExtensions.swift */; };
 		AD0000010000000000000002 /* ForgeDesign.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD0000010000000000000001 /* ForgeDesign.swift */; };
+		AE0000010000000000000001 /* BuildDiagnosticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0000010000000000000011 /* BuildDiagnosticsView.swift */; };
+		AE0000010000000000000002 /* BuildHealthBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0000010000000000000012 /* BuildHealthBanner.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -79,6 +81,8 @@
 		AC0000010000000000000005 /* CairoPlay-ExtraBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Fonts/CairoPlay-ExtraBold.ttf ; sourceTree = "<group>"; };
 		AC0000010000000000000006 /* FontExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/Extensions/FontExtensions.swift ; sourceTree = "<group>"; };
 		AD0000010000000000000001 /* ForgeDesign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/Design/ForgeDesign.swift; sourceTree = "<group>"; };
+		AE0000010000000000000011 /* BuildDiagnosticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Builds/BuildDiagnosticsView.swift; sourceTree = "<group>"; };
+		AE0000010000000000000012 /* BuildHealthBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Builds/BuildHealthBanner.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,6 +119,8 @@
 		A40000010000000000000002 /* ForgeApp */ = {
 			isa = PBXGroup;
 			children = (
+				AE0000010000000000000012 /* BuildHealthBanner.swift */,
+				AE0000010000000000000011 /* BuildDiagnosticsView.swift */,
 				AD0000010000000000000001 /* ForgeDesign.swift */,
 				AC0000010000000000000006 /* FontExtensions.swift */,
 				AC0000010000000000000005 /* CairoPlay-ExtraBold.ttf */,
@@ -234,6 +240,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AE0000010000000000000002 /* BuildHealthBanner.swift in Sources */,
+				AE0000010000000000000001 /* BuildDiagnosticsView.swift in Sources */,
 				AD0000010000000000000002 /* ForgeDesign.swift in Sources */,
 				AC0000010000000000000016 /* FontExtensions.swift in Sources */,
 				AB0000010000000000000023 /* SourceSelectionView.swift in Sources */,
