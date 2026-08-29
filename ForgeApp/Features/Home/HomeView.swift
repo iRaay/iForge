@@ -7,27 +7,18 @@ struct ContentView: View {
     var body: some View {
         if onboardingCompleted {
             TabView(selection: $selectedTab) {
-            HomeView(selectedTab: $selectedTab)
-                .tabItem { Label("Home", systemImage: "house.fill") }
-                .tag(0)
-
-            ProjectsView()
-                .tabItem { Label("Projects", systemImage: "folder.fill") }
-                .tag(1)
-
-            BuildsView()
-                .tabItem { Label("Builds", systemImage: "hammer.fill") }
-                .tag(2)
-
-            IPAFilesView()
-                .tabItem { Label("IPA Files", systemImage: "archivebox.fill") }
-                .tag(3)
-
-            SettingsView()
-                .tabItem { Label("Settings", systemImage: "gearshape.fill") }
-                .tag(4)
-        }
-        .tint(.purple)
+                HomeView(selectedTab: $selectedTab)
+                    .tabItem { Label("Home", systemImage: ForgeSymbol.home) }.tag(0)
+                ProjectsView()
+                    .tabItem { Label("Projects", systemImage: ForgeSymbol.projects) }.tag(1)
+                BuildsView()
+                    .tabItem { Label("Builds", systemImage: ForgeSymbol.builds) }.tag(2)
+                IPAFilesView()
+                    .tabItem { Label("IPA Files", systemImage: ForgeSymbol.ipa) }.tag(3)
+                SettingsView()
+                    .tabItem { Label("Settings", systemImage: ForgeSymbol.settings) }.tag(4)
+            }
+            .tint(ForgeDesign.accent)
         } else {
             OnboardingView()
         }
