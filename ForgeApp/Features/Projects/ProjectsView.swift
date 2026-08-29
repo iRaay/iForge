@@ -15,53 +15,60 @@ struct ProjectsView: View {
     var body: some View {
         NavigationStack {
             Group {
-                VStack(spacing: 0) {
-                    NavigationLink { SourceSelectionView() } label: {
-                        Label("New Build", systemImage: "plus.circle.fill")
-                            .font(.headline).frame(maxWidth: .infinity, alignment: .leading)
-                    }
-                    .padding(.horizontal)
-                    .padding(.vertical, 10)
-                    .background(.purple.opacity(0.10))
-                    repositoryListOrState
+                if !auth.isConnected {
+                    ForgeEmptyState(icon: ForgeSymbol.github, title: "Connect GitHub", message: "Sign in from Settings to see your repositories.")
+                } else if isLoading {
+                    ProgressView("Loading repositories…")
+                        .controlSize(.large)
+                } else if let errorMessage {
+                    ForgeEmptyState(icon: ForgeSymbol.error, title: "Could Not Load Projects", message: LocalizedStringKey(errorMessage))
+                } else if filtered.isEmpty {
+                    ForgeEmptyState(icon: ForgeSymbol.projects, title: query.isEmpty ? "No Repositories" : "No Matches", message: query.isEmpty ? "This account has no repositories yet." : "Try a different search.")
+                } else {
+                    projectList
                 }
             }
             .navigationTitle("Projects")
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    NavigationLink { SourceSelectionView() } label: {
+                        Image(systemName: ForgeSymbol.add)
+                    }
+                    .accessibilityLabel("New Build")
+                }
+            }
             .searchable(text: $query, prompt: "Search repositories")
             .refreshable { await load() }
             .task { await load() }
         }
     }
 
-    @ViewBuilder
-    private var repositoryListOrState: some View {
-        if !auth.isConnected {
-            ContentUnavailableView("Connect GitHub", systemImage: "person.badge.key",
-                description: Text("Sign in from Settings to see your repositories."))
-        } else if isLoading {
-            ProgressView("Loading repositories…")
-        } else if let error = errorMessage {
-            ContentUnavailableView("Could Not Load Projects", systemImage: "exclamationmark.triangle",
-                description: Text(error))
-        } else if filtered.isEmpty {
-            ContentUnavailableView(query.isEmpty ? "No Repositories" : "No Matches",
-                systemImage: "folder",
-                description: Text(query.isEmpty ? "This account has no repositories yet." : "Try a different search."))
-        } else {
-            repositoryList
-        }
-    }
-
-    private var repositoryList: some View {
-        List(filtered) { repository in
-            NavigationLink {
-                BuildConfigView(repository: repository)
-            } label: {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(repository.name).font(.headline)
-                    Text(repository.fullName).font(.caption).foregroundStyle(.secondary)
+    private var projectList: some View {
+        List {
+            Section {
+                ForEach(filtered) { repository in
+                    NavigationLink { BuildConfigView(repository: repository) } label: {
+                        HStack(spacing: 13) {
+                            Image(systemName: repository.isPrivate ? "lock.fill" : ForgeSymbol.github)
+                                .font(.title3)
+                                .foregroundStyle(ForgeDesign.accent)
+                                .frame(width: 42, height: 42)
+                                .background(ForgeDesign.accent.opacity(0.12), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(repository.name).font(.headline)
+                                Text(repository.fullName).font(.caption).foregroundStyle(.secondary)
+                                Text("\(repository.defaultBranch) · \(repository.isPrivate ? String(localized: "Private") : String(localized: "Public"))")
+                                    .font(.caption2).foregroundStyle(.secondary)
+                            }
+                            Spacer()
+                        }
+                        .padding(.vertical, 4)
+                    }
                 }
-                .padding(.vertical, 2)
+            } header: {
+                Text("My Repositories")
+            } footer: {
+                Text("Select a project to configure and start a build.")
             }
         }
         .listStyle(.insetGrouped)
@@ -72,10 +79,7 @@ struct ProjectsView: View {
         isLoading = repositories.isEmpty
         errorMessage = nil
         defer { isLoading = false }
-        do {
-            repositories = try await GitHubAPI.shared.fetchAuthenticatedUserRepositories()
-        } catch {
-            errorMessage = error.localizedDescription
-        }
+        do { repositories = try await GitHubAPI.shared.fetchAuthenticatedUserRepositories() }
+        catch { errorMessage = error.localizedDescription }
     }
 }
