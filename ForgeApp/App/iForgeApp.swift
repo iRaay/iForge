@@ -9,6 +9,7 @@ struct iForgeApp: App {
         WindowGroup {
             ContentView()
                 .environment(\.locale, Locale(identifier: appLanguage == "system" ? Locale.current.identifier : appLanguage))
+                .environment(\.font, iForgeFont.custom(size: 17))
                 .preferredColorScheme(selectedColorScheme)
         }
     }
